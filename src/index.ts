@@ -1,21 +1,22 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
-import {User} from "./entity/User";
-
+import { Photo } from "./entity/Photo.entity";
+import { buildPhoto } from "./factories/build-photo";
+import { User } from "./entity/User.entity";
+import { buildUser } from "./factories/build-user";
 createConnection().then(async connection => {
+    const photoRepo = connection.getRepository(Photo);
+    const userRepo = connection.getRepository(User);
 
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.firstName = "Timber";
-    user.lastName = "Saw";
-    user.age = 25;
-    await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.id);
+    // 工厂 
+    const user = buildUser();
+    const photo = buildPhoto(user);
 
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
+    // 按照依赖关系来 save
+    userRepo.save(user);
+    photoRepo.save(photo);
 
-    console.log("Here you can setup and run express/koa/any other framework.");
+    console.log(await userRepo.find({ relations: ['photo']}));
+    console.log(await photoRepo.find());
 
 }).catch(error => console.log(error));

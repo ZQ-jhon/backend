@@ -1,7 +1,7 @@
-# Awesome Project Build with TypeORM
+## 重置 mysql 密码
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 
-Steps to run this project:
-
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+## 基本步骤
+1. 连接 mysql
+2. CREATE TABLE
+3. reflect relation: INSERT/REMOVE/UPDATE/SELECT => save/remove/update/has 
