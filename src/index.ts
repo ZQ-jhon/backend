@@ -16,7 +16,8 @@ createConnection().then(async connection => {
     userRepo.save(user);
     photoRepo.save(photo);
 
-    console.log(await userRepo.find({ relations: ['photo']}));
+    console.log(await userRepo.find());
     console.log(await photoRepo.find());
+    // 在 mysql 中查询，此时会发现 photo 表中多了一个外键 userId, 见 result.png
 
 }).catch(error => console.log(error));
