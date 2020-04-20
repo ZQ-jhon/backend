@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common'
-import { User } from './user.entity'
-import { UserService } from './user.service'
+import { Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
+import { User } from './user.entity';
+import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -8,28 +8,35 @@ export class UserController {
     @Post('save')
     @HttpCode(201)
     public async save(@Body() dto: User) {
-        let message = ''
+        let message = '';
         await this.userService
             .save(dto)
             .then(() => {
-                message = '注册成功'
+                message = '注册成功';
             })
             .catch(e => {
-                message = '注册失败'
-            })
-        return message
+                message = '注册失败';
+            });
+        return message;
     }
 
     @Get()
     public async getUser(@Query() sort: { offset: number; limit: number }) {
         if (sort.offset && sort.limit) {
-            return await this.userService.findAll(sort.offset, sort.limit)
+            return await this.userService.findAll(sort.offset, sort.limit);
         }
-        return await this.userService.findAll()
+        return await this.userService.findAll();
     }
 
     @Get(':id')
     public async getUserById(@Param() id: number) {
-        return await this.userService.findOne(id)
+        return await this.userService.findOne(id);
+    }
+
+    @Post('comment')
+    @HttpCode(201)
+    public async comment(@Body() comment: string) {
+        if (!comment) { return '评论不能为空'; }
+        comment
     }
 }
