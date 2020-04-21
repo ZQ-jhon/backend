@@ -10,7 +10,7 @@ export class LogService {
         @InjectRepository(Log)
         private readonly logRepository: Repository<Log>,
     ) {}
-    public async setLog(log: Partial<Log>) {
+    public setLog(log: Log) {
         return this.logRepository.save(log);
     }
     public getLog(logId: number) {

@@ -8,12 +8,12 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
-    ) {}
+    ) { }
 
     public save(user: User): Promise<User> {
         return this.userRepository.save(user);
     }
-    public findAll(offset = 0, limit = 10) {
+    public findByOffsetAndLimit(offset = 0, limit = 10) {
         return this.userRepository
             .createQueryBuilder('user')
             .offset(offset)
