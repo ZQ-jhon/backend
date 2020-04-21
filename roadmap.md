@@ -1,4 +1,4 @@
-# 数据库（廖雪峰）
+# 数据库
 
 ## 前置知识
 
@@ -49,7 +49,7 @@
 
 ### 外键约束
 
-- 外键可以通过数据库约束，这样会防止脏数据产生，例如，增加一个 student ，外键关联到 classID 为200 的班级，但不存在，此时，student 是无法写入 dn的
+- 外键可以通过数据库约束，这样会防止脏数据产生，例如，增加一个 student ，外键关联到 classID 为200 的班级，但不存在，此时，student 是无法写入 db的
 
 ### 联合主键
 
@@ -76,6 +76,10 @@
 
 	- 不是，索引就像目录，数据就像内容，如果一本书 10页内容，100页索引，效率肯定不高。1.数据少，没必要索引 2.如果是频繁更新，修改的列，索引会带来额外开销 3. 只对关键列建索引。数据库。 因此，主键由于跟业务解耦，不会变动，所以建索引是效率最高的。
 
+- 建索引
+
+	- ALTER TABLE student ADD INDEX Idx_number （columnName）
+
 ## 基本操作
 
 ### 建库
@@ -84,11 +88,17 @@
 
 ### 建表
 
-### CREAT TABLE name (field)；
+- CREAT TABLE name (field)；
+
+### 删表
+
+- DROP TABLE name;
 
 ### 数据操作
 
 - 增 INSERT INTO TABLENAME(field) VALUES(value )，如果是插入多个值，可以:  Values(value1），（values 2）;
+改 UPDATE TABLE_name SET 字段 =值  where ID=1 （也可以 id > 10）；
+删 DELETE  FROM  表名。WHERE ...
 
 ### 查询
 
@@ -116,6 +126,12 @@
 
 - SELECT * FROM student WHERE score >1 LIMIT 10  ORDER BY ID；
 
+### 投影查询 
+
+- 顾名思义，就是将所查询的列赋予一个临时的名字，显示在最终的结果中
+- SELECT id 唯一编号，name 姓名 FROM student；                                                               更可以：SELECT student.id Sid, student.name s_name，class.id cid,class.name c_name FROM student, class;
+- 再简洁一点：SELECT s.id Sid, s.name s_name，c.id cid,c.name c_name FROM student s, class c;
+
 ### 聚合查询
 
 - COUNT 计数： SELECT COUNT（*）FROM student；
@@ -126,10 +142,27 @@
 
 ### 多表查询
 
+- SELECT * FROM student ，class ；
+- 例如查两张表 2栏2行 和 3栏4行 那么返回的结果是 一个 5栏X8行的表。栏相加，行相乘。又称为 笛卡尔查询
+
 ### 连接查询 
+
+- 先选一张表作为结果集的主表。                          1.先确定主表，仍然使用FROM <表1>的语法；
+2.再确定需要连接的表，使用INNER JOIN <表2>的语法；
+3.然后确定连接条件，使用ON <条件...>，这里的条件是s.class_id = c.id，表示students表的class_id列与classes表的id列相同的行需要连接；
+4.可选：加上WHERE子句、ORDER BY等子句。
+- 内连接举例： SELECT s.id 序号，s.name 姓名，c.name 班级名 FROM class c INNER JOIN student s ON c.class_id = s.id;
+- 外连接举例： SELECT s.id 序号，s.name 姓名，c.name 班级名 FROM class c right outer JOIN student s ON c.class_id = s.id;
+- Inner join只滤出两张表都有的数据                  
+right outer join 会返回右表都存在的行。
+同理，left 会滤出只有左表存在的数据。
+full outer join 会滤出两张表都存在的 行
 
 ## 高级操作
 
-### 子主题 1
+### 替换。REPLACE INTO 表名 （字段）VALUES (值)
 
-*XMind - Trial Version*
+### 插入或更新
+
+//TODO:
+- INSERT INTO ... ON DUPLICATE KEY UPDATE...
