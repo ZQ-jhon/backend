@@ -19,6 +19,7 @@ export class UserController {
             try {
                 return await this.userService.save(dto);
             } catch (err) {
+                console.log(err);
                 throw new BadRequestException(this.buildfailureResponse(402, 'POST 凭据字段不全，应该有 username 以及 password'));
             }
     }

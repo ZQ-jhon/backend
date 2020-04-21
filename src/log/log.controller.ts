@@ -20,6 +20,7 @@ export class LogController {
             const result = await this.logService.setLog(log);
             return { success: true, value: result } as Success<Log>;
         } catch (err) {
+            console.log(err);
             throw new BadRequestException(this.buildfailureResponse(402, 'POST 凭据字段不全，应该有 content 以及 userId'));
         }
 
