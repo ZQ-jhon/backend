@@ -6,7 +6,7 @@ export class AppService {
     public getAllEndpoints() {
         return {
             '[EndPoint] For all endpoints': `GET ${this.baseUrl}`,
-            '[User API] Save a user'               : `POST ${this.baseUrl}/user/save body: {id: string, name: string, log: Log, password: string}`,
+            '[User API] Save a user'               : `POST ${this.baseUrl}/user body: {id: string, name: string, log: Log, password: string}`,
             '[User API] Get one user'              : `GET  ${this.baseUrl}/user/:id `,
             '[User API] Get user by limit & offset': `GET  ${this.baseUrl}/user?offset={offset}&limit={limit}`,
             '[Log  API] Save a log '               : `POST ${this.baseUrl}/log body: {id: }`,
