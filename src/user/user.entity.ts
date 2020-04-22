@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, CreateDateColumn } from 'typeorm';
+import { Entity, Column, OneToOne, CreateDateColumn, PrimaryColumn } from 'typeorm';
 import { Log } from 'src/log/log.entity';
+import { v4 } from 'uuid';
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryColumn()
+    id?: string = v4();
     @CreateDateColumn()
     createdAt: Date;
     @Column()

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-
+import { v4 } from 'uuid';
 @Injectable()
 export class UserService {
     constructor(
@@ -11,6 +11,7 @@ export class UserService {
     ) { }
 
     public save(user: User): Promise<User> {
+        if (!user.id) { user.id = v4(); }
         return this.userRepository.save(user);
     }
     public findByOffsetAndLimit(offset = 0, limit = 10) {

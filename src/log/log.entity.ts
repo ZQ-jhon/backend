@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, CreateDateColumn, PrimaryColumn } from 'typeorm';
 import { User } from 'src/user/user.entity';
-
+import { v4 } from 'uuid';
 @Entity()
 export class Log {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryColumn()
+    id?: string = v4();
 
     @CreateDateColumn()
     commentedAt: Date;

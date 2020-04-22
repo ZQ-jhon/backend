@@ -80,6 +80,31 @@
 
 	- ALTER TABLE student ADD INDEX Idx_number （columnName）
 
+### 事务
+
+- 多条语句视为一个整体，要执行必须全部都执行
+- BEGIN 
+UPDATE class1 SET MEMBER =MEMBER - 1；
+UPDATE  class2 SET MEMBER=member+1；
+COMMIT；
+- 事务的隔离级别
+
+	- READ UNCOMMITTED
+
+		- 隔离级别最低，可以进行脏读。读取其他会话 updated 且 uncomitted 的数据
+
+	- Read Committed
+
+		- 可以读到其他事务中已经 committed 的数据
+
+	- Repeatable Read
+
+		- mysql 默认的事物隔离级别，即一个事务只能看到自己变动的数据，看不到其他事务做的操作。可能会导致幻读。
+
+	- Serializable
+
+		- 最严格的级别，事务必须排成队列，因此不存在脏读，幻读等问题。
+
 ## 基本操作
 
 ### 建库
@@ -164,5 +189,14 @@ full outer join 会滤出两张表都存在的 行
 
 ### 插入或更新
 
-//TODO:
 - INSERT INTO ... ON DUPLICATE KEY UPDATE...
+
+### 快照
+
+- CREATE TABLE NEWTABLE SELECT * FROM student;
+
+### 查询结果写入新表
+
+- INSERT INTO STATISTICS （ID，MEMBER）SELECT COUNT（*）FROM CLASS；
+
+*XMind - Trial Version*
