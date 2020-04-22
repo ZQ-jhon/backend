@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { from } from 'rxjs';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
 import { v4 } from 'uuid';
+import { User } from './user.entity';
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>
+        private readonly userRepository: Repository<User>,
     ) { }
 
     public save(user: User): Promise<User> {
@@ -21,10 +22,12 @@ export class UserService {
             .limit(limit)
             .getMany();
     }
-    public findOne(id: number) {
+    public findOne(id: string) {
         return this.userRepository.findOne(id);
     }
     public counteAll() {
         return this.userRepository.findAndCount();
     }
+
+
 }

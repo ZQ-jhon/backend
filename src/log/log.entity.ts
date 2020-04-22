@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn, CreateDateColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, CreateDateColumn, PrimaryColumn, ManyToOne } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { v4 } from 'uuid';
 @Entity()
@@ -13,7 +13,7 @@ export class Log {
     content: string;
 
     // 声明父类映射，及在子父类中对应的 field
-    @OneToOne(type => User, user => user.log)
+    @ManyToOne(type => User, user => user.log)
     @JoinColumn()
-    userId: number;
+    user: string;
 }

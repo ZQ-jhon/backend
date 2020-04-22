@@ -28,7 +28,7 @@ export class UserController {
      * 获取单个 User
      */
     @Get(':id')
-    public async getUserById(@Param() id: number) {
+    public async getUserById(@Param() id: string) {
         return await this.userService.findOne(id);
     }
 

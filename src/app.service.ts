@@ -9,6 +9,7 @@ export class AppService {
             '[User API] Save a user'               : `POST ${this.baseUrl}/user body: {id: string, name: string, log: Log, password: string}`,
             '[User API] Get one user'              : `GET  ${this.baseUrl}/user/:id `,
             '[User API] Get user by limit & offset': `GET  ${this.baseUrl}/user?offset={offset}&limit={limit}`,
+            '[User API] Get all logs by userId'    : `GET  ${this.baseUrl}/user/:id/logs `,
             '[Log  API] Save a log '               : `POST ${this.baseUrl}/log body: {userId: string, content: string }`,
             '[Log  API] Get one log'               : `GET  ${this.baseUrl}/log/:id`
         };
