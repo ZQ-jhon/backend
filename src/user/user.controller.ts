@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Query, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { Success, Faliure } from 'src/interfaces/success.interface';
+import { Faliure } from 'src/interfaces/success.interface';
 @Controller('user')
 export class UserController {
     private buildfailureResponse = (code: number, msg: string) => ({ error: code, message: msg }) as Faliure<string>;
