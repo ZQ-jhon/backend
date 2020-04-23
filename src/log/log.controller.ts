@@ -17,7 +17,7 @@ export class LogController {
     @Post()
     @HttpCode(201)
     public async setLog(@Body() log: Log) {
-        if (!log.id) {log.id = v4();}
+        if (!log.id) { log.id = v4(); }
         try {
             const result = await this.logService.setLog(log);
             return { success: true, value: result } as Success<Log>;
@@ -35,6 +35,7 @@ export class LogController {
     public async getLogByUserId(@Param() id: string) {
         try {
             const result = await this.logService.getLog(id);
+            if (!result) { throw new Error('Log id is not exist!'); }
             return { success: true, value: result } as Success<Log>;
         } catch (err) {
             return { error: err.status, message: err.message } as Faliure<string>;

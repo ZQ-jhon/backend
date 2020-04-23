@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+</head>
+
+<body>
+    <input type="number" placeholder="输入随机创建的用户数量" id="number" />
+    <button type="submit" id="btn"> 提交</button>
+
+    状态：
+    <p id="result"></p>
+    <script>
+        const randomString = (len) => {
+            len = len || 32;
+            var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+            var maxPos = $chars.length;
+            var randomString = '';
+            for (i = 0; i < len; i++) {
+                randomString += $chars.charAt(Math.floor(Math.random() * maxPos));
+            }
+            return randomString;
+        }
+
+        function postUser() {
+            document.querySelector('#result').innerHTML = '';
+            const number = document.querySelector('#number').value || 5;
+            for (let i = 0; i < number; i++) {
+                const text = randomString();
+                console.log(text);
+                post({ username: `${text}`, password: `pwd_${text}` }).then();
+            }
+        }
+
+        function post(body) {
+            if (Object.prototype.toString.call(body) !== '[object Object]') {
+                throw new TypeError(`${body} is not a object to use in JSON.parse()!`);
+            }
+            return new Promise((res, rej) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://127.0.0.1:3000/user', false);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify(body));
+                if (xhr.readyState === 4) {
+                    if (Math.floor(xhr.status / 200) === 1) {
+                        document.querySelector('#result').innerHTML += body.username + `创建成功` + '<br/>';
+                        res(xhr.response);
+                    } else {
+                        rej(xhr.response);
+                    }
+                }
+            })
+        }
+        const btn = document.querySelector('#btn');
+        const username = document.querySelector('#username');
+        const password = document.querySelector('#password');
+
+        btn.onclick = postUser;
+
+    </script>
+</body>
+
+</html>
