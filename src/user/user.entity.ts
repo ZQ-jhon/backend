@@ -4,17 +4,17 @@ import { v4 } from 'uuid';
 
 @Entity()
 export class User {
-    @PrimaryColumn()
-    id?: string = v4();
-    @CreateDateColumn()
+    @PrimaryColumn({ name: 'id' })
+    id: string = v4();
+    @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
-    @Column()
+    @Column({ name: 'username' })
     username: string;
 
-    @Column()
+    @Column({ name: 'password' })
     password: string;
 
     // 声明子类映射，及在子类中对应的 field
-    @OneToMany(type => Log, log => log.user)
-    log?: Log[];
+    @OneToMany(type => Log, log => log.userId)
+    log: Log[];
 }

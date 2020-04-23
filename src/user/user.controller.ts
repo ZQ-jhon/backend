@@ -2,6 +2,8 @@ import { Body, Controller, Get, HttpCode, Param, Post, Query, HttpException, Htt
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { Faliure } from 'src/interfaces/success.interface';
+import { v4 } from 'uuid';
+
 @Controller('user')
 export class UserController {
     private buildfailureResponse = (code: number, msg: string) => ({ error: code, message: msg }) as Faliure<string>;
@@ -16,12 +18,13 @@ export class UserController {
     @Post()
     @HttpCode(201)
     public async save(@Body() dto: User) {
-            try {
-                return await this.userService.save(dto);
-            } catch (err) {
-                console.log(err);
-                throw new BadRequestException(this.buildfailureResponse(402, 'POST 凭据字段不全，应该有 username 以及 password'));
-            }
+        if (!dto.id) { dto.id = v4(); }
+        try {
+            return await this.userService.save(dto);
+        } catch (err) {
+            console.log(err);
+            throw new BadRequestException(this.buildfailureResponse(402, 'POST 凭据字段不全，应该有 username 以及 password'));
+        }
     }
 
     /**

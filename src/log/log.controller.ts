@@ -2,6 +2,7 @@ import { BadRequestException, Body, Controller, Get, HttpCode, HttpException, Pa
 import { Faliure, Success } from 'src/interfaces/success.interface';
 import { Log } from './log.entity';
 import { LogService } from './log.service';
+import { v4 } from 'uuid';
 @Controller('log')
 export class LogController {
     private buildfailureResponse = (code: number, msg: string) => ({ error: code, message: msg }) as Faliure<string>;
@@ -16,6 +17,7 @@ export class LogController {
     @Post()
     @HttpCode(201)
     public async setLog(@Body() log: Log) {
+        if (!log.id) {log.id = v4();}
         try {
             const result = await this.logService.setLog(log);
             return { success: true, value: result } as Success<Log>;
