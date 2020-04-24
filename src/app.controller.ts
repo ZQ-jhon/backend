@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode } from '@nestjs/common';
+import { Controller, Get, HttpCode, Header } from '@nestjs/common';
 import { AppService } from './app.service';
 import { runInThisContext } from 'vm';
 
@@ -8,6 +8,6 @@ export class AppController {
 
     @Get()
     public getAllEndpoint() {
-        return this.appService.getAllEndpoints();
+        return `<pre> ${this.appService.getAllEndpoints()} </pre>`;
     }
 }
