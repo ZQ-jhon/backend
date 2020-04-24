@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
+import { makeObservable } from '../util/make-observable';
 import { Log } from './log.entity';
-const makeObservable = <T>(promise: Promise<T>) => from(promise);
+import { catchError } from 'rxjs/operators';
+import { errThrowerBuilder } from '../util/err-thrower-builder';
+
 @Injectable()
 export class LogService {
     constructor(
@@ -14,18 +16,14 @@ export class LogService {
     ) { }
     public setLog(log: Log) {
         if (!log.id) { log.id = v4(); }
-        console.log(log);
-        return this.logRepository.save(log);
+        return makeObservable(this.logRepository.save(log)).pipe(
+            catchError(err => errThrowerBuilder(err, '保存日志出错', HttpStatus.SERVICE_UNAVAILABLE))
+        );
     }
     public getLog(logId: string) {
-        return this.logRepository.findOne(logId);
-    }
-    public getAllLogByUserId(userId: string) {
-        const log$ = this.logRepository.query(
-            `SELECT * FROM test.log`
-        ) as Promise<Log[]>;
-        return makeObservable(log$).pipe(
-            map(logs => logs),
-        );
+        if (!logId) {
+            return throwError(new HttpException(`没有 logId，无法进行精确日志查询!`, HttpStatus.PAYMENT_REQUIRED));
+        }
+        return makeObservable(this.logRepository.findOne(logId));
     }
 }
