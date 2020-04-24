@@ -18,16 +18,20 @@ export class UserService {
     public findByOffsetAndLimit(offset = 0, limit = 10) {
         return this.userRepository
             .createQueryBuilder('user')
+            .select(['user.username', 'user.id', 'user.createdAt'])
             .offset(offset)
             .limit(limit)
             .getMany();
     }
     public findOne(id: string) {
-        return this.userRepository.findOne(id);
+        return this.userRepository
+            .createQueryBuilder('user')
+            .select(['user.username', 'user.id', 'user.createdAt'])
+            .where(`user.id = :id OR user.username = :id`, { id })
+            .getMany();
     }
-    public counteAll() {
+    public countAllUser() {
         return this.userRepository.findAndCount();
     }
-
 
 }

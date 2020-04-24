@@ -27,21 +27,18 @@ export class UserController {
         }
     }
 
-    /**
-     * 获取单个 User
-     */
-    @Get(':id')
-    public async getUserById(@Param() id: string) {
-        return await this.userService.findOne(id);
-    }
 
     /**
-     * 根据分页参数查 User
+     * 根据 分页参数/userId/username 查 User
      */
     @Get()
-    public async getUserByQuery(@Query() sort: { offset: number; limit: number }) {
-        if (sort.offset && sort.limit) {
-            return await this.userService.findByOffsetAndLimit(sort.offset, sort.limit);
+    public async getUserByQuery(@Query() query: { offset: number; limit: number; userId?: string }) {
+        if (query.userId && !query.offset && !query.limit) {
+            const user =  await this.userService.findOne(query.userId);
+            return user;
+        }
+        if (!query.userId && query.offset && query.limit) {
+            return await this.userService.findByOffsetAndLimit(query.offset, query.limit);
         }
         return await this.userService.findByOffsetAndLimit();
     }
