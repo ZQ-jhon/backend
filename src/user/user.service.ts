@@ -30,6 +30,7 @@ export class UserService {
             return this.findOne(userId);
         }
         const builder = this.userRepository.createQueryBuilder('user')
+            .select(['user.username', 'user.id', 'user.createdAt'])
             .offset(offset)
             .limit(limit)
             .getMany();
