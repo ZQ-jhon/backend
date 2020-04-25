@@ -25,8 +25,15 @@ export class UserController {
      * 根据 分页参数/userId/username 查 User
      */
     @Get()
-    public async getUserByQuery(@Query() query: { offset: number; limit: number; userId?: string }) {
-        return await this.userService.findByOffsetAndLimit(query.userId, query.offset, query.limit).toPromise();
+    public async getUserByQuery(@Query() query: { offset: number; limit: number; userId?: string; username?: string }) {
+        const findByUserIdOrUsername = !!query.userId || !!query.username;
+        const findByOffsetAndLimit = !!query.offset || !!query.limit;
+        if (findByUserIdOrUsername) {
+            return await this.userService.findOne(query.username);
+        }
+        if (findByOffsetAndLimit) {
+            return await this.userService.findByOffsetAndLimit(query.offset, query.limit);
+        }
     }
 
     @Get(':id/comment')

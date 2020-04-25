@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { combineLatest, throwError } from 'rxjs';
+import { combineLatest, throwError, Observable, of } from 'rxjs';
 import { catchError, map, tap, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
@@ -27,10 +27,7 @@ export class UserService {
             switchMap(exist => exist ? error$ : save$),
         )
     }
-    public findByOffsetAndLimit(userId: string, offset = 0, limit = 10) {
-        if (!!userId) {
-            return this.findOne(userId);
-        }
+    public findByOffsetAndLimit(offset = 0, limit = 10) {
         const builder = this.userRepository.createQueryBuilder('user')
             .select(['user.username', 'user.id', 'user.createdAt'])
             .offset(offset)
@@ -50,24 +47,25 @@ export class UserService {
             this.userRepository.createQueryBuilder('user')
                 .where('user.username = :id', { id: user.username })
                 .getOne()
-        ).pipe(map(u => !!user));
+        ).pipe(map(u => !!u));
     }
 
-    public findOne(userId: string) {
+    public findOne(userIdOrUsername: string) {
         const userPromise = this.userRepository
             .createQueryBuilder('user')
             .select(['user.username', 'user.id', 'user.createdAt'])
-            .where('id = :uid', { uid: userId })
+            .where('user.id = :uid OR user.username = :username', { uid: userIdOrUsername, username: userIdOrUsername })
             .getOne();
         return makeObservable(userPromise).pipe(
-            catchError(err => errThrowerBuilder(err, `用户 id ${userId} 不存在`, HttpStatus.NOT_FOUND)),
+            switchMap(user => user instanceof User ? of(user) : throwError(`${userIdOrUsername} 不存在`)),
+            catchError(err => errThrowerBuilder(err, `用户 ${userIdOrUsername} 不存在`, HttpStatus.NOT_FOUND)),
         );
     }
 
     public findUserByUsername(username: string) {
         const promise = this.userRepository.createQueryBuilder('user')
             .select(['user.username'])
-            .where('username = :username', { username })
+            .where('user.username = :username', { username })
             .getOne();
         return makeObservable(promise).pipe(
             catchError(err => errThrowerBuilder(err, `用户 ${username} 已存在，不允许重复创建`, HttpStatus.BAD_REQUEST)),
@@ -98,9 +96,9 @@ export class UserService {
     /**
      * 根据用户 id 获取用户，附带最近的 10 条 comment 记录
      */
-    public getUserWithLatestComment(userId: string, sort: { offset: number, limit: number }) {
-        const user$ = this.findOne(userId);
-        const comment$ = this.getCommentsByUserId(userId, sort);
+    public getUserWithLatestComment(userIdOrUsername: string, sort: { offset: number, limit: number }) {
+        const user$ = this.findOne(userIdOrUsername) as Observable<User>;
+        const comment$ = this.getCommentsByUserId(userIdOrUsername, sort);
         return combineLatest([user$, comment$]).pipe(
             map(([user, comment]) => {
                 user.comment = comment || [];

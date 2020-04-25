@@ -1,0 +1,32 @@
+body {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: auto;
+    border: 2px solid black;
+    margin: 20px;
+    padding: 30px;
+}
+
+.warnning {
+    color: red;
+}
+
+button {
+    width: 80px;
+    height: 40px;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
