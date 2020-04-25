@@ -16,14 +16,14 @@ ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 Pre:
 - [x] Learnning mysql and sql language.
 - [x] Learnning Nest.js and TypeORM.
-- [x] Using X-MIND recoard process.
+- [x] Using X-MIND record process.
 
 Base:
 - [x] Build boilerplate with Mysql + Nest.js + Rx.js + TypeORM 
 - [x] UserModule and CommentModule devloped.
 - [x] Adding swagger document builder. 
 - [x] Using postman in pre-push step.
-- [x] Create a front forms page for test easily.
+- [x] Create a front-end forms page for test easily.
 - [x] Deploy and running it in Tencent-CVM by PM2.
 - [ ] Written unit test.
 - [ ] Intergration to my blog.
