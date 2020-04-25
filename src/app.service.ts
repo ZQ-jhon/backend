@@ -9,13 +9,13 @@ export class AppService {
                 '[EndPoint] For all endpoints             ': 'GET ${this.baseUrl}'
             },
             user: {
-                '[User API] Save a user                   ': 'POST ${this.baseUrl}/user body: Log',
+                '[User API] Save a user                   ': 'POST ${this.baseUrl}/user body: [Comment]',
                 '[User API] Get one user with query userId': 'GET  ${this.baseUrl}/user?userId={id} ',
                 '[User API] Get user by limit & offset    ': 'GET  ${this.baseUrl}/user?offset={offset}&limit={limit}',
             },
-            log: {
-                '[Log  API] Save a log                    ': 'POST ${this.baseUrl}/log body: {userId: string, content: string }',
-                '[Log  API] Get one log                   ': 'GET  ${this.baseUrl}/log/:id',
+            comment: {
+                '[comment  API] Save a comment            ': 'POST ${this.baseUrl}/comment body: {userId: string, content: string }',
+                '[comment  API] Get one comment           ': 'GET  ${this.baseUrl}/comment/:id'
             }
 }`;
     }

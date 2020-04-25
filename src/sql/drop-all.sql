@@ -1,2 +1,2 @@
-DROP TABLE log;
+DROP TABLE comment;
 DROP TABLE user;

@@ -15,9 +15,9 @@ export class UserController {
      */
     @Post()
     @ApiCreatedResponse()
-    public async save(@Body() dto: User) {
-        if (!dto.id) { dto.id = v4(); }
-        return await this.userService.save(dto).toPromise();
+    public async save(@Body() user: User) {
+        if (!user.id) { user.id = v4(); }
+        return await this.userService.save(user).toPromise();
     }
 
 
@@ -29,8 +29,8 @@ export class UserController {
         return await this.userService.findByOffsetAndLimit(query.userId, query.offset, query.limit).toPromise();
     }
 
-    @Get(':id/log')
-    public async getUserWithLog(@Param() param: { id: string }, @Query() query?: { offset: number, limit: number }) {
-        return await this.userService.getUserWithLatestLog(param.id, query).toPromise();
+    @Get(':id/comment')
+    public async getUserWithComment(@Param() param: { id: string }, @Query() query?: { offset: number, limit: number }) {
+        return await this.userService.getUserWithLatestComment(param.id, query).toPromise();
     }
 }
