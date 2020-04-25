@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiCreatedResponse } from '@nestjs/swagger';
+import { v4 } from 'uuid';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { Faliure } from '../interfaces/success.interface';
-import { v4 } from 'uuid';
 
 @Controller('user')
 export class UserController {
@@ -14,7 +14,7 @@ export class UserController {
      * 创建 User
      */
     @Post()
-    @HttpCode(201)
+    @ApiCreatedResponse()
     public async save(@Body() dto: User) {
         if (!dto.id) { dto.id = v4(); }
         return await this.userService.save(dto).toPromise();
