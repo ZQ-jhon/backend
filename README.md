@@ -10,4 +10,28 @@ ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 [http://127.0.0.1/api](http://127.0.0.1/api)
 
 ## Quick view all Endpoint
-[http://127.0.0.1](http://127.0.0.1)
+[[GET] http://127.0.0.1](http://127.0.0.1)
+
+## TODO
+Pre:
+- [x] Learnning mysql and sql language.
+- [x] Learnning Nest.js and TypeORM.
+- [x] Using X-MIND recoard process.
+
+Base:
+- [x] Build boilerplate with Mysql + Nest.js + Rx.js + TypeORM 
+- [x] UserModule and CommentModule devloped.
+- [x] Adding swagger document builder. 
+- [x] Using postman in pre-push step.
+- [x] Create a front forms page for test easily.
+- [x] Deploy and running it in Tencent-CVM by PM2.
+- [ ] Written unit test.
+- [ ] Intergration to my blog.
+
+Optimization & Advanced:
+
+- [ ] Custom middleware and decorater. 
+- [ ] Exception Filter
+- [ ] Pipe
+- [ ] Guard
+- [ ] Interceptor
