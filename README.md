@@ -25,7 +25,7 @@ Base:
 - [x] Using postman in pre-push step.
 - [x] Create a front-end forms page for test easily.
 - [x] Deploy and running it in Tencent-CVM by PM2.
-- [ ] JWT Bearer authrozation.
+- [x] JWT Bearer authrozation.
 - [ ] Unified response interface.
 - [ ] Written unit test.
 - [ ] Intergration to my blog.
