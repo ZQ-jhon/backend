@@ -2,6 +2,42 @@ import { ajax } from './ajax.js';
 import { randomString } from './random-string.js';
 const baseUrl = `http://127.0.0.1:3000`;
 
+// 登录
+// <div>
+// <h4>登录测试</h4>
+// <label for="loginUsername">loginUsername</label><input id="loginUsername" type="text"  />
+// <label for="loginPassword">loginPassword</label><input id="loginPassword" type="password" >
+// <section class="button-group">
+//     <button class="clear">清除日志</button>
+//     <button id="login">登录</button>
+// </section>
+// <p id="loginResult"></p>
+// </div>
+const loginUsername = document.querySelector('#loginUsername');
+const loginPassword = document.querySelector('#loginPassword');
+const loginAction = document.querySelector('#login');
+const loginResult = document.querySelector('#loginResult');
+
+loginAction.addEventListener('click', function(e){
+    const user = {
+        username: loginUsername.value,
+        password: loginPassword.value
+    };
+    ajax({
+        method: 'POST',
+        url: `${baseUrl}/user/login`,
+        body: user,
+        success: function (e) {
+            localStorage.setItem('token', `Bearer ` + JSON.parse(e).value);
+            console.log(JSON.parse(e));
+            loginResult.innerHTML += `用户 ${username} 登录成功, token 已存入 localstorage, 详情请见控制台<br/>`;
+        },
+        error: function (err) {
+            loginResult.innerHTML += `<b class="warnning">${err.message}<br/>`;
+        }
+    }).then().catch(err => {});
+}, false);
+
 
 // 单独创建
 const usernameInput = document.querySelector('#username');
