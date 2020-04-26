@@ -1,6 +1,6 @@
 import { ajax } from './ajax.js';
 import { randomString } from './random-string.js';
-const baseUrl = `${location.hostname}:3000`;
+const baseUrl = `http://${location.hostname}:3000`;
 // 登录
 // <div>
 // <h4>登录测试</h4>
