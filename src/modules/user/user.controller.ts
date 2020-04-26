@@ -21,7 +21,8 @@ export class UserController {
     @ApiCreatedResponse()
     public async save(@Body() user: User) {
         if (!user.id) { user.id = v4(); }
-        return await this.userService.save(user).toPromise();
+        const _user = await this.userService.save(user).toPromise();
+        return { success: true, value: _user } as Success<Partial<User>>;
     }
 
 
@@ -34,30 +35,32 @@ export class UserController {
         const findByUserIdOrUsername = !!query.userId || !!query.username;
         const findByOffsetAndLimit = !!query.offset || !!query.limit;
         if (findByUserIdOrUsername) {
-            return await this.userService.findOne(query.username);
+            const _user = await this.userService.findOne(query.username).toPromise();
+            return { success: true, value: _user } as Success<Partial<User>>;
         }
         if (findByOffsetAndLimit) {
-            return await this.userService.findByOffsetAndLimit(query.offset, query.limit);
+            const _users = await this.userService.findByOffsetAndLimit(query.offset, query.limit).toPromise();
+            return { succes: true, value: _users };
         }
     }
 
     @Get(':username/comment')
     @ApiBearerAuth()
     public async getUserWithComment(@Param() param: { username: string }, @Query() query?: { offset: number, limit: number }) {
-        return await this.userService.getUserWithLatestComment(param.username, query).toPromise();
+        const _user = await this.userService.getUserWithLatestComment(param.username, query).toPromise();
+        return { success: true, value: _user } as Success<Partial<User>>;
     }
 
     @Post('login')
     @ApiCreatedResponse()
     public async login(@Body() body: { username: string, password: string }) {
         if (!body.username || !body.password) {
-            // TODO: 抛出错误放在 service
-            return errThrowerBuilder(new Error('More PAYMENT_REQUIRED in login'), `登录凭据不全，请补充后再尝试`, HttpStatus.PAYMENT_REQUIRED);
+            return await errThrowerBuilder(new Error('More PAYMENT_REQUIRED in login'), `登录凭据不全，请补充后再尝试`, HttpStatus.PAYMENT_REQUIRED).toPromise();
         }
         const user = await this.userService.tryLogin(body).toPromise()
         if (!!user) {
             const token = this.authService.signJWT(body.username, user.id);
-            return { token };
+            return { success: true, value: token } as Success<Partial<User>>;
         }
     }
 
@@ -65,10 +68,7 @@ export class UserController {
     public async test(@Headers('authorization') authHeader: string) {
         try {
             const token = await this.authService.verifyJWT(authHeader);
-            return {
-                success: true,
-                value: token,
-            } as Success<string>;
+            return { success: true, value: token } as Success<string>;
         } catch (err) {
             return new HttpException(err.message, HttpStatus.UNAUTHORIZED);
         }

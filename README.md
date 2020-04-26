@@ -26,7 +26,7 @@ Base:
 - [x] Create a front-end forms page for test easily.
 - [x] Deploy and running it in Tencent-CVM by PM2.
 - [x] JWT Bearer authrozation.
-- [ ] Unified response interface.
+- [x] Unified response interface.
 - [ ] Written unit test.
 - [ ] Intergration to my blog.
 

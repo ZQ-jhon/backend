@@ -97,6 +97,7 @@ export class UserService {
      * 根据用户 id 获取用户，附带最近的 10 条 comment 记录
      */
     public getUserWithLatestComment(userIdOrUsername: string, sort = { offset: 0, limit: 10 }) {
+        // TODO: try using innerJoin for connect `user` & `comment`
         const user$ = this.findOne(userIdOrUsername) as Observable<User>;
         const comment$ = this.getCommentsByUserId(userIdOrUsername, sort);
         return combineLatest([user$, comment$]).pipe(
