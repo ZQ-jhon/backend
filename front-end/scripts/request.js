@@ -63,7 +63,7 @@ document.querySelectorAll('.clear').forEach(clearBtn => {
 })
 
 
-// 查询
+// 精确查询
 const checkUserInput = document.querySelector('#checkUserInput');
 const checkUserButton = document.querySelector('#checkUserButton');
 const checkUserResult = document.querySelector('#checkUserResult');
@@ -79,4 +79,23 @@ checkUserButton.addEventListener('click', function (e) {
             checkUserResult.innerHTML += `<b class="warnning">${JSON.parse(err).message}<br/>`
         },
     }).then().catch(err => { });
-})
+}, false);
+
+// 分页查询
+const offsetInput = document.querySelector('#offset');
+const limitInput = document.querySelector('#limit');
+const checkUserButton2 = document.querySelector('#checkUserButton2');
+const checkUserResult2 = document.querySelector('#checkUserResult2');
+
+checkUserButton2.addEventListener('click', function(e){
+    ajax({
+        method: 'GET',
+        url: `${baseUrl}/user?offset=${offsetInput.value || 0}&limit=${limitInput.value || 10}`,
+        success: function (e) {
+            checkUserResult2.innerHTML += e;
+        },
+        error: function (err) {
+            checkUserResult2.innerHTML += `<b class="warnning">${JSON.parse(err).message}<br/>`
+        },
+    }).then().catch(err => { });
+}, false);
