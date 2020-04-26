@@ -96,7 +96,7 @@ export class UserService {
     /**
      * 根据用户 id 获取用户，附带最近的 10 条 comment 记录
      */
-    public getUserWithLatestComment(userIdOrUsername: string, sort: { offset: number, limit: number }) {
+    public getUserWithLatestComment(userIdOrUsername: string, sort = { offset: 0, limit: 10 }) {
         const user$ = this.findOne(userIdOrUsername) as Observable<User>;
         const comment$ = this.getCommentsByUserId(userIdOrUsername, sort);
         return combineLatest([user$, comment$]).pipe(
@@ -104,6 +104,20 @@ export class UserService {
                 user.comment = comment || [];
                 return user;
             }),
+        );
+    }
+
+    /**
+     * matchOneByPayload
+     */
+    public tryLogin(payload: { username: string, password: string }) {
+        const promise = this.userRepository.createQueryBuilder('user')
+            .where(`user.password = :pwd AND user.username = :username`, { pwd: payload.password, username: payload.username })
+            .select(['user.id', 'user.username'])
+            .getOne();
+        return makeObservable(promise).pipe(
+            tap(u => console.log(u)),
+            switchMap(u => !!u ? of(u) : errThrowerBuilder(new Error('Authrozation failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)),
         );
     }
 }
