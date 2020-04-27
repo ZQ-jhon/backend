@@ -24,10 +24,10 @@ export class CommmentController {
      * 根据 id 查询一条 comment
      */
     @Get(':id')
-    public async getCommentByUserId(@Param() param: { id: string }) {
-        const result = await this.commentService.getComment(param.id).toPromise();
+    public async getCommentByUserId(@Param('id') id: string) {
+        const result = await this.commentService.getComment(id).toPromise();
         if (!result) {
-            return errThrowerBuilder(new Error('没有查询到结果'), `没有查询到结果 ${param.id}`, 404);
+            return errThrowerBuilder(new Error('没有查询到结果'), `没有查询到结果 ${id}`, 404);
         }
         return { success: true, value: result } as Success<Comment>;
 

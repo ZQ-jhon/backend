@@ -8,6 +8,7 @@ import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { makeObservable } from '../../util/make-observable';
 import { Comment } from '../comment/comment.entity';
 import { User } from './user.entity';
+import { AuthService } from './auth.service';
 
 
 @Injectable()
@@ -17,6 +18,7 @@ export class UserService {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Comment)
         private readonly commentRepository: Repository<Comment>,
+        private readonly authService: AuthService,
     ) { }
 
     public save(user: User) {
@@ -79,14 +81,13 @@ export class UserService {
     /**
      * 根据用户 id 获取最近 10 条日志
      */
-    public getCommentsByUserId(userId: string, sort: { offset: number, limit: number }) {
-        if (!sort || !sort.limit || !sort.offset) { sort = { offset: 0, limit: 10 }; }
+    public getCommentsByUserId(userId: string, offset = 0, limit = 0) {
         const commentPromise = this.commentRepository
             .createQueryBuilder('comment')
             .orderBy('commented_at', 'DESC')
             .where(`comment.userId = :userId`, { userId })
-            .offset(sort.offset)
-            .limit(sort.limit)
+            .offset(offset)
+            .limit(limit)
             .getMany();
         return makeObservable(commentPromise).pipe(
             catchError(err => throwError(new HttpException(`查询用户<${userId}>日志时出现错误: ${err.message}`, HttpStatus.SERVICE_UNAVAILABLE))),
@@ -96,10 +97,10 @@ export class UserService {
     /**
      * 根据用户 id 获取用户，附带最近的 10 条 comment 记录
      */
-    public getUserWithLatestComment(userIdOrUsername: string, sort = { offset: 0, limit: 10 }) {
+    public getUserWithLatestComment(userIdOrUsername: string, offset = 0, limit = 10) {
         // TODO: try using innerJoin for connect `user` & `comment`
         const user$ = this.findOne(userIdOrUsername) as Observable<User>;
-        const comment$ = this.getCommentsByUserId(userIdOrUsername, sort);
+        const comment$ = this.getCommentsByUserId(userIdOrUsername, offset, limit);
         return combineLatest([user$, comment$]).pipe(
             map(([user, comment]) => {
                 user.comment = comment || [];
@@ -121,4 +122,9 @@ export class UserService {
             switchMap(u => !!u ? of(u) : errThrowerBuilder(new Error('Authrozation failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)),
         );
     }
+
+    public checkToken(token: string) {
+        return this.authService.verifyJWT(token);
+    }
+    
 }

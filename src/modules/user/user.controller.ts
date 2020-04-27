@@ -46,8 +46,8 @@ export class UserController {
 
     @Get(':username/comment')
     @ApiBearerAuth()
-    public async getUserWithComment(@Param() param: { username: string }, @Query() query?: { offset: number, limit: number }) {
-        const _user = await this.userService.getUserWithLatestComment(param.username, query).toPromise();
+    public async getUserWithComment(@Param('username') username: string, @Query('offset') offset: number, @Query('limit') limit: number) {
+        const _user = await this.userService.getUserWithLatestComment(username, offset, limit).toPromise();
         return { success: true, value: _user } as Success<Partial<User>>;
     }
 
@@ -61,16 +61,6 @@ export class UserController {
         if (!!user) {
             const token = this.authService.signJWT(body.username, user.id);
             return { success: true, value: token } as Success<Partial<User>>;
-        }
-    }
-
-    @Get('test')
-    public async test(@Headers('authorization') authHeader: string) {
-        try {
-            const token = await this.authService.verifyJWT(authHeader);
-            return { success: true, value: token } as Success<string>;
-        } catch (err) {
-            return new HttpException(err.message, HttpStatus.UNAUTHORIZED);
         }
     }
 
