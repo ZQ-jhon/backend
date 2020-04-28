@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 
 describe('AppController', () => {
     let appController: AppController;
-
+    let appService: AppService;
     beforeEach(async () => {
         const app: TestingModule = await Test.createTestingModule({
             controllers: [AppController],
@@ -12,11 +12,20 @@ describe('AppController', () => {
         }).compile();
 
         appController = app.get<AppController>(AppController);
+        appService = app.get<AppService>(AppService);
     });
 
     describe('root', () => {
-        it('should return "Hello World!"', () => {
+        it('Controller & Service Defined', () => {
             expect(appController).toBeDefined();
+            expect(appService).toBeDefined();
         });
+
+        it('Verify endpoint includes KEYS:', () => {
+            expect(appService.getAllEndpoints).toBeDefined();
+            const returns = appService.getAllEndpoints();
+            expect(/.*?all.|\r*user.|\r*comment/gm.test(returns)).toBeTruthy();
+        });
+
     });
 });
