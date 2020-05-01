@@ -13,6 +13,7 @@ describe('AppService', () => {
 
     describe('AppService', () => {
         it('Verify endpoint includes KEYS:', () => {
+            expect(appService).toBeDefined();
             expect(appService.getAllEndpoints).toBeDefined();
             expect(appService).toHaveProperty(['getAllEndpoints']);
         });

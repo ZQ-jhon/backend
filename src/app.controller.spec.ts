@@ -18,12 +18,12 @@ describe('AppController', () => {
     describe('root', () => {
         it('Controller & Service Defined', () => {
             expect(appController).toBeDefined();
-            expect(appService).toBeDefined();
+            expect(appController.getAllEndpoint).toBeDefined();
         });
 
         it('Verify endpoint includes KEYS:', () => {
-            expect(appService.getAllEndpoints).toBeDefined();
             const returns = appService.getAllEndpoints();
+            expect(returns).toBeTruthy();
             expect(/.*?all.|\r*user.|\r*comment/gm.test(returns)).toBeTruthy();
         });
 
