@@ -14,19 +14,19 @@ ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 
 ## TODO
 Pre:
-- [x] Learnning mysql and sql language.
-- [x] Learnning Nest.js and TypeORM.
-- [x] Using X-MIND record process.
+- [x] ~~Learnning mysql and sql language.~~
+- [x] ~~Learnning Nest.js and TypeORM.~~
+- [x] ~~Using X-MIND record process.~~
 
 Base:
-- [x] Build boilerplate with Mysql + Nest.js + Rx.js + TypeORM 
-- [x] UserModule and CommentModule devloped.
-- [x] Adding swagger document builder. 
-- [x] Using postman in pre-push step.
-- [x] Create a front-end forms page for test easily.
-- [x] Deploy and running it in Tencent-CVM by PM2.
-- [x] JWT Bearer authrozation.
-- [x] Unified response interface.
+- [x] ~~Build boilerplate with Mysql + Nest.js + Rx.js + TypeORM~~ 
+- [x] ~~UserModule and CommentModule devloped.~~
+- [x] ~~Adding swagger document builder.~~
+- [x] ~~Using postman in pre-push step.~~
+- [x] ~~Create a front-end forms page for test easily.~~
+- [x] ~~Deploy and running it in Tencent-CVM by PM2.~~
+- [x] ~~JWT Bearer authrozation.~~
+- [x] ~~Unified response interface.~~
 - [ ] Written unit test.
 - [ ] Intergration to my blog.
 
