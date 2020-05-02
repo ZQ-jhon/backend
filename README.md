@@ -37,3 +37,7 @@ Optimization & Advanced:
 - [ ] Pipe
 - [ ] Guard
 - [ ] Interceptor
+
+## Questions in development
+- OOM killer in linux 
+resolution: commit #6e7608
