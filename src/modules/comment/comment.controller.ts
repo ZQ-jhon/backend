@@ -4,7 +4,7 @@ import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 @Controller('comment')
-export class CommmentController {
+export class CommentController {
     constructor(
         private readonly commentService: CommentService,
     ) { }

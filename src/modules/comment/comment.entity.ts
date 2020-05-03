@@ -3,6 +3,9 @@ import { v4 } from 'uuid';
 import { User } from '../user/user.entity';
 @Entity()
 export class Comment {
+    constructor(id?: string) {
+        this.id = id;
+    }
     @PrimaryColumn({ unique: true })
     id: string = v4();
 

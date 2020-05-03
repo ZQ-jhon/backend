@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
-import { Comment } from './comment.entity';
-import { makeObservable } from '../../util/make-observable';
-import { catchError } from 'rxjs/operators';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
+import { makeObservable } from '../../util/make-observable';
+import { Comment } from './comment.entity';
 
 
 @Injectable()

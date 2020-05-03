@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommmentController } from './comment.controller';
+import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { Comment } from './comment.entity';
 
 const CONTROLLERS = [
-    CommmentController,
+    CommentController,
 ];
 @Module({
     imports: [
