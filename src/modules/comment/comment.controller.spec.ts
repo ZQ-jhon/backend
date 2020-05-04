@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommentController } from './comment.controller';
-import { CommentService } from './comment.service';
 import { Comment } from './comment.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { of } from 'rxjs';
 
 
 describe('CommentController', () => {
@@ -11,12 +10,11 @@ describe('CommentController', () => {
         const app: TestingModule = await Test.createTestingModule({
             controllers: [CommentController],
             providers: [
-                CommentService,
                 {
-                    provide: getRepositoryToken(Comment),
+                    provide: 'CommentService',
                     useValue: {
-                        setComment: (cmt: unknown) => new Promise(res => res(cmt)),
-                        getComment: (id: string) => new Promise(res => res(new Comment(id))),
+                        setComment: (cmt: unknown) => of(cmt),
+                        getComment: (id: string) => of(new Comment(id)),
                     },
                 }
             ],
@@ -33,9 +31,8 @@ describe('CommentController', () => {
         });
         it('Called CommentService after called CommentController', async () => {
             const comment = new Comment('cmt');
-            const setComment = jest.fn<Comment, Comment[]>(cmt => cmt);
-            expect(setComment(comment).id).toEqual('cmt');
-            expect(setComment).toBeCalled();
+            expect(await commentController.setComment(comment)).toBeTruthy();
+            expect(await commentController.getCommentByUserId('cmt')).toEqual({success: true, value: comment });
         });
     });
 });

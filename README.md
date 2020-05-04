@@ -38,6 +38,23 @@ Optimization & Advanced:
 - [ ] Guard
 - [ ] Interceptor
 
+## Test Coverage in unit-test
+| File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
+| ---------------------- | ------- | -------- | ------- | ------- | ----------------- |
+| All files              | 88.24   | 50       | 63.16   | 90.91   |
+| src                    | 92.86   | 100      | 75      | 90      |
+| app.controller.ts      | 87.5    | 100      | 50      | 83.33   | 10                |
+| app.service.ts         | 100     | 100      | 100     | 100     |
+| src/modules/comment    | 88      | 50       | 70      | 90.24   |
+| comment.controller.ts  | 93.75   | 50       | 100     | 92.86   | 30                |
+| comment.entity.ts      | 85.71   | 100      | 33.33   | 90      | 19                |
+| comment.service.ts     | 85      | 50       | 75      | 88.24   | 21,26             |
+| src/modules/user       | 78.57   | 100      | 0       | 90      |
+| user.entity.ts         | 78.57   | 100      | 0       | 90      | 18                |
+| src/util               | 100     | 100      | 100     | 100     |
+| err-thrower-builder.ts | 100     | 100      | 100     | 100     |
+| make-observable.ts     | 100     | 100      | 100     | 100     |
+
 ## Questions in development
 - OOM killer in linux 
 resolution: commit #6e7608
