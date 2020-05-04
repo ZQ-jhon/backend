@@ -18,5 +18,5 @@ export class Comment {
     // 声明父类映射，及在子父类中对应的 field
     @ManyToOne(type => User, user => user.comment)
     @JoinColumn({ name: 'user_id' })
-    userId: User;
+    userId: string;
 }

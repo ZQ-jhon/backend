@@ -23,13 +23,11 @@ describe('CommentService', () => {
         commentService = app.get(CommentService);
     });
 
-    describe('CommentService', () => {
-        it('CommentService has been defined', async () => {
-            expect(commentService).toBeDefined();
-            const cmt = new Comment('cmt');
-            expect(await commentService.setComment(cmt).toPromise()).toBeTruthy();
-            const result = await commentService.getComment(cmt.id).toPromise();
-            expect(result).toBeTruthy();
-        });
+    it('CommentService has been defined', async () => {
+        expect(commentService).toBeDefined();
+        const cmt = new Comment('cmt');
+        expect(await commentService.setComment(cmt).toPromise()).toBeTruthy();
+        const result = await commentService.getComment(cmt.id).toPromise();
+        expect(result).toBeTruthy();
     });
 });
