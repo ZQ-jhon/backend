@@ -5,9 +5,7 @@ import { CommentService } from './comment.service';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 @Controller('comment')
 export class CommentController {
-    constructor(
-        private readonly commentService: CommentService,
-    ) { }
+    constructor(private readonly commentService: CommentService) {}
 
     /**
      * 构建一条 comment
@@ -17,7 +15,6 @@ export class CommentController {
     public async setComment(@Body() comment: Comment) {
         const result = await this.commentService.setComment(comment).toPromise();
         return { success: true, value: result } as Success<Comment>;
-
     }
 
     /**
@@ -30,8 +27,5 @@ export class CommentController {
             return errThrowerBuilder(new Error('没有查询到结果'), `没有查询到结果 ${id}`, 404);
         }
         return { success: true, value: result } as Success<Comment>;
-
-
     }
-
 }

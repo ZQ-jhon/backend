@@ -9,10 +9,7 @@ import { Success } from '../../interfaces/success.interface';
 
 @Controller('user')
 export class UserController {
-    constructor(
-        private readonly userService: UserService,
-        private readonly authService: AuthService,
-    ) { }
+    constructor(private readonly userService: UserService, private readonly authService: AuthService) {}
 
     /**
      * 创建 User
@@ -20,11 +17,12 @@ export class UserController {
     @Post()
     @ApiCreatedResponse()
     public async save(@Body() user: User) {
-        if (!user.id) { user.id = v4(); }
+        if (!user.id) {
+            user.id = v4();
+        }
         const _user = await this.userService.save(user).toPromise();
         return { success: true, value: _user } as Success<Partial<User>>;
     }
-
 
     /**
      * 根据 分页参数/userId/username 查 User
@@ -46,18 +44,26 @@ export class UserController {
 
     @Get(':username/comment')
     @ApiBearerAuth()
-    public async getUserWithComment(@Param('username') username: string, @Query('offset') offset: number, @Query('limit') limit: number) {
+    public async getUserWithComment(
+        @Param('username') username: string,
+        @Query('offset') offset: number,
+        @Query('limit') limit: number
+    ) {
         const _user = await this.userService.getUserWithLatestComment(username, offset, limit).toPromise();
         return { success: true, value: _user } as Success<Partial<User>>;
     }
 
     @Post('login')
     @ApiCreatedResponse()
-    public async login(@Body() body: { username: string, password: string }) {
+    public async login(@Body() body: { username: string; password: string }) {
         if (!body.username || !body.password) {
-            return await errThrowerBuilder(new Error('More PAYMENT_REQUIRED in login'), `登录凭据不全，请补充后再尝试`, HttpStatus.PAYMENT_REQUIRED).toPromise();
+            return await errThrowerBuilder(
+                new Error('More PAYMENT_REQUIRED in login'),
+                `登录凭据不全，请补充后再尝试`,
+                HttpStatus.PAYMENT_REQUIRED
+            ).toPromise();
         }
-        const user = await this.userService.tryLogin(body).toPromise()
+        const user = await this.userService.tryLogin(body).toPromise();
         if (!!user) {
             const token = this.authService.signJWT(body.username, user.id);
             return { success: true, value: token } as Success<Partial<User>>;
@@ -69,5 +75,4 @@ export class UserController {
     public refreshToken(@Headers('authorization') authorization: string) {
         return { success: true, value: this.authService.refreshToken(authorization.split(' ')[1]) };
     }
-
 }

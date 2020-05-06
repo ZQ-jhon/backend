@@ -8,15 +8,16 @@ import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { makeObservable } from '../../util/make-observable';
 import { Comment } from './comment.entity';
 
-
 @Injectable()
 export class CommentService {
     constructor(
         @InjectRepository(Comment)
-        private readonly commentRepository: Repository<Comment>,
-    ) { }
+        private readonly commentRepository: Repository<Comment>
+    ) {}
     public setComment(comment: Comment) {
-        if (!comment.id) { comment.id = v4(); }
+        if (!comment.id) {
+            comment.id = v4();
+        }
         return makeObservable(this.commentRepository.save(comment)).pipe(
             catchError(err => errThrowerBuilder(err, '保存评论出错', HttpStatus.SERVICE_UNAVAILABLE))
         );

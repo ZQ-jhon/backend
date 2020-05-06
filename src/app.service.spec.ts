@@ -17,6 +17,5 @@ describe('AppService', () => {
             expect(appService.getAllEndpoints).toBeDefined();
             expect(appService).toHaveProperty(['getAllEndpoints']);
         });
-
     });
 });

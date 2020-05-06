@@ -1,7 +1,6 @@
 import { makeObservable } from './make-observable';
 import { Observer } from 'rxjs';
 
-
 describe('makeObservable', () => {
     it('MakeObservable Will Defined', () => {
         const _promiseString = new Promise(res => res('test string'));
@@ -17,21 +16,20 @@ describe('makeObservable', () => {
         const observableWithNumber = makeObservable(_promiseNumber);
         observableWithNumber.subscribe(response => {
             expect(response).toEqual(1);
-        })
+        });
 
         const observableWithError = makeObservable(_promiseError);
         const observer: Observer<any> = {
-
             next: (value: any) => {
                 expect(value).toHaveBeenCalledTimes(0);
             },
             error: (err: any) => {
                 expect(err.message).toEqual('Error');
             },
-            complete: () => { void 0; },
+            complete: () => {
+                void 0;
+            },
         };
         observableWithError.subscribe(observer);
     });
-
-
 });

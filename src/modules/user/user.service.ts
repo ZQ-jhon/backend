@@ -10,7 +10,6 @@ import { Comment } from '../comment/comment.entity';
 import { User } from './user.entity';
 import { AuthService } from './auth.service';
 
-
 @Injectable()
 export class UserService {
     constructor(
@@ -18,25 +17,26 @@ export class UserService {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Comment)
         private readonly commentRepository: Repository<Comment>,
-        private readonly authService: AuthService,
-    ) { }
+        private readonly authService: AuthService
+    ) {}
 
     public save(user: User) {
-        if (!user.id) { user.id = v4(); }
+        if (!user.id) {
+            user.id = v4();
+        }
         const save$ = makeObservable(this.userRepository.save(user));
         const error$ = errThrowerBuilder(new Error('用户已存在'), '用户已存在，无法重复创建', HttpStatus.BAD_REQUEST);
-        return this.checkUserIsExist(user).pipe(
-            switchMap(exist => exist ? error$ : save$),
-        )
+        return this.checkUserIsExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
     }
     public findByOffsetAndLimit(offset = 0, limit = 10) {
-        const builder = this.userRepository.createQueryBuilder('user')
+        const builder = this.userRepository
+            .createQueryBuilder('user')
             .select(['user.username', 'user.id', 'user.createdAt'])
             .offset(offset)
             .limit(limit)
             .getMany();
         return makeObservable<User | User[]>(builder).pipe(
-            catchError(err => errThrowerBuilder(err, `分页查询用户出错`, HttpStatus.INTERNAL_SERVER_ERROR)),
+            catchError(err => errThrowerBuilder(err, `分页查询用户出错`, HttpStatus.INTERNAL_SERVER_ERROR))
         );
     }
 
@@ -46,7 +46,8 @@ export class UserService {
      */
     public checkUserIsExist(user: User) {
         return makeObservable(
-            this.userRepository.createQueryBuilder('user')
+            this.userRepository
+                .createQueryBuilder('user')
                 .where('user.username = :id', { id: user.username })
                 .getOne()
         ).pipe(map(u => !!u));
@@ -59,18 +60,19 @@ export class UserService {
             .where('user.id = :uid OR user.username = :username', { uid: userIdOrUsername, username: userIdOrUsername })
             .getOne();
         return makeObservable(userPromise).pipe(
-            switchMap(user => user instanceof User ? of(user) : throwError(`${userIdOrUsername} 不存在`)),
-            catchError(err => errThrowerBuilder(err, `用户 ${userIdOrUsername} 不存在`, HttpStatus.NOT_FOUND)),
+            switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrUsername} 不存在`))),
+            catchError(err => errThrowerBuilder(err, `用户 ${userIdOrUsername} 不存在`, HttpStatus.NOT_FOUND))
         );
     }
 
     public findUserByUsername(username: string) {
-        const promise = this.userRepository.createQueryBuilder('user')
+        const promise = this.userRepository
+            .createQueryBuilder('user')
             .select(['user.username'])
             .where('user.username = :username', { username })
             .getOne();
         return makeObservable(promise).pipe(
-            catchError(err => errThrowerBuilder(err, `用户 ${username} 已存在，不允许重复创建`, HttpStatus.BAD_REQUEST)),
+            catchError(err => errThrowerBuilder(err, `用户 ${username} 已存在，不允许重复创建`, HttpStatus.BAD_REQUEST))
         );
     }
 
@@ -90,7 +92,14 @@ export class UserService {
             .limit(limit)
             .getMany();
         return makeObservable(commentPromise).pipe(
-            catchError(err => throwError(new HttpException(`查询用户<${userId}>日志时出现错误: ${err.message}`, HttpStatus.SERVICE_UNAVAILABLE))),
+            catchError(err =>
+                throwError(
+                    new HttpException(
+                        `查询用户<${userId}>日志时出现错误: ${err.message}`,
+                        HttpStatus.SERVICE_UNAVAILABLE
+                    )
+                )
+            )
         );
     }
 
@@ -105,20 +114,28 @@ export class UserService {
             map(([user, comment]) => {
                 user.comment = comment || [];
                 return user;
-            }),
+            })
         );
     }
 
     /**
      * matchOneByPayload
      */
-    public tryLogin(payload: { username: string, password: string }) {
-        const promise = this.userRepository.createQueryBuilder('user')
-            .where(`user.password = :pwd AND user.username = :username`, { pwd: payload.password, username: payload.username })
+    public tryLogin(payload: { username: string; password: string }) {
+        const promise = this.userRepository
+            .createQueryBuilder('user')
+            .where(`user.password = :pwd AND user.username = :username`, {
+                pwd: payload.password,
+                username: payload.username,
+            })
             .select(['user.id', 'user.username'])
             .getOne();
         return makeObservable(promise).pipe(
-            switchMap(u => !!u ? of(u) : errThrowerBuilder(new Error('Authorization failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)),
+            switchMap(u =>
+                !!u
+                    ? of(u)
+                    : errThrowerBuilder(new Error('Authorization failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)
+            )
         );
     }
 }

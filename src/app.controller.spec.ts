@@ -26,6 +26,5 @@ describe('AppController', () => {
             expect(returns).toBeTruthy();
             expect(/.*?all.|\r*user.|\r*comment/gm.test(returns)).toBeTruthy();
         });
-
     });
 });

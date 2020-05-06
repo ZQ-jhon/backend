@@ -4,14 +4,10 @@ import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { Comment } from './comment.entity';
 
-const CONTROLLERS = [
-    CommentController,
-];
+const CONTROLLERS = [CommentController];
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Comment]),
-    ],
+    imports: [TypeOrmModule.forFeature([Comment])],
     providers: [CommentService],
     controllers: [...CONTROLLERS],
 })
-export class CommentModule { }
+export class CommentModule {}

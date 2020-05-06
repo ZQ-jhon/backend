@@ -3,7 +3,6 @@ import { CommentController } from './comment.controller';
 import { Comment } from './comment.entity';
 import { of } from 'rxjs';
 
-
 describe('CommentController', () => {
     let commentController: CommentController;
     beforeEach(async () => {
@@ -16,7 +15,7 @@ describe('CommentController', () => {
                         setComment: (cmt: unknown) => of(cmt),
                         getComment: (id: string) => of(new Comment(id)),
                     },
-                }
+                },
             ],
         }).compile();
 
@@ -32,7 +31,7 @@ describe('CommentController', () => {
         it('Called CommentService after called CommentController', async () => {
             const comment = new Comment('cmt');
             expect(await commentController.setComment(comment)).toBeTruthy();
-            expect(await commentController.getCommentByUserId('cmt')).toEqual({success: true, value: comment });
+            expect(await commentController.getCommentByUserId('cmt')).toEqual({ success: true, value: comment });
         });
     });
 });

@@ -16,7 +16,7 @@ describe('CommentService', () => {
                         save: (cmt: unknown) => new Promise(res => res(cmt)),
                         findOne: (id: string) => new Promise(res => res(new Comment(id))),
                     },
-                }
+                },
             ],
             controllers: [CommentController],
         }).compile();
