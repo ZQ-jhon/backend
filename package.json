@@ -77,7 +77,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run format",
-      "post-merge": "npm run build && npx pm2 restart all && bash ./restart-service.bash"
+      "post-merge": "npm run build && npx pm2 restart all && node scripts/restart-service.js"
     }
   }
 }
