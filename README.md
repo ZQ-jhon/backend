@@ -58,3 +58,6 @@ Optimization & Advanced:
 ## Questions in development
 - OOM killer in linux 
 resolution: commit #6e7608
+
+- Auto build and restart nginx service
+resolution: execute shell/script with git hooks and husky 
