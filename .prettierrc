@@ -6,5 +6,6 @@
   "insertSpaceBeforeFunctionParenthesis": true,
   "TrailingCooma": "all",
   "bracketSpacing": true,
-
+  "useTabs": false,
+  "markdown": true,
 }
