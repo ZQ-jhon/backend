@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Success } from "src/interfaces/success.interface";
 
 @Injectable()
 export class AuthService {
@@ -18,13 +17,19 @@ export class AuthService {
     //   "iss": "Micro-Service-Name",
     //   "sub": "from-application"
     // }
-    return this.jwtService.sign({ username, userId }, { algorithm: 'HS256', expiresIn: '1day' });
+    return this.jwtService.sign({ username, userId }, { algorithm: 'HS256', expiresIn: '1d' });
   }
   public decodeJWT(token: string) {
     return this.jwtService.decode(token);
   }
-  public verifyJWT(token: string) {
-    const [tokenType, _token] = token.split(' ');
-    return this.jwtService.verifyAsync(_token);
+
+  public refreshToken(token: string) {
+    const { username, userId } = this.decodeJWT(token) as { username: string, userId: string };
+    try {
+      this.jwtService.verify(token);
+      return token;
+    } catch (err) {
+      return this.signJWT(username, userId);
+    }
   }
 }

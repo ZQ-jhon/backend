@@ -118,13 +118,7 @@ export class UserService {
             .select(['user.id', 'user.username'])
             .getOne();
         return makeObservable(promise).pipe(
-            tap(u => console.log(u)),
-            switchMap(u => !!u ? of(u) : errThrowerBuilder(new Error('Authrozation failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)),
+            switchMap(u => !!u ? of(u) : errThrowerBuilder(new Error('Authorization failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)),
         );
     }
-
-    public checkToken(token: string) {
-        return this.authService.verifyJWT(token);
-    }
-    
 }

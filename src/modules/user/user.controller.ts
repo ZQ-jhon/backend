@@ -5,7 +5,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { AuthService } from './auth.service';
-import { Success } from 'src/interfaces/success.interface';
+import { Success } from '../../interfaces/success.interface';
 
 @Controller('user')
 export class UserController {
@@ -62,6 +62,12 @@ export class UserController {
             const token = this.authService.signJWT(body.username, user.id);
             return { success: true, value: token } as Success<Partial<User>>;
         }
+    }
+
+    @Post('token')
+    @ApiBearerAuth()
+    public refreshToken(@Headers('authorization') authorization: string) {
+        return { success: true, value: this.authService.refreshToken(authorization.split(' ')[1]) };
     }
 
 }
