@@ -27,12 +27,13 @@ Base:
 - [x] ~~Deploy and running it in Tencent-CVM by PM2.~~
 - [x] ~~JWT Bearer authrozation.~~
 - [x] ~~Unified response interface.~~
-- [ ] Written unit test.
+- [x] ~~Written unit test.~~
+- [ ] Written e2e test.
 - [ ] Intergration to my blog.
 
 Optimization & Advanced:
 
-- [ ] Custom middleware and decorater. 
+- [ ] Custom middleware and decorator. 
 - [ ] Exception Filter
 - [ ] Pipe
 - [ ] Guard
