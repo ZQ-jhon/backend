@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, Post, Query, HttpStatus, HttpException, Header, Headers } from '@nestjs/common';
-import { ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Body, Controller, Get, Headers, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { v4 } from 'uuid';
-import { User } from './user.entity';
-import { UserService } from './user.service';
+import { Success } from '../../interfaces/success.interface';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { AuthService } from './auth.service';
-import { Success } from '../../interfaces/success.interface';
+import { User } from './user.entity';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
