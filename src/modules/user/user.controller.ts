@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Headers, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
-import { v4 } from 'uuid';
 import { Success } from '../../interfaces/success.interface';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import { UserDto } from './user.dto';
+import { plainToClass } from 'class-transformer';
+import { UserDtoPipe } from '../../user-dto-pipe.pipe';
 
 @Controller('user')
 export class UserController {
@@ -16,11 +18,8 @@ export class UserController {
      */
     @Post()
     @ApiCreatedResponse()
-    public async save(@Body() user: User) {
-        if (!user.id) {
-            user.id = v4();
-        }
-        const _user = await this.userService.save(user).toPromise();
+    public async save(@Body(new UserDtoPipe()) user: UserDto) {
+        const _user = await this.userService.save(plainToClass(User, user)).toPromise();
         return { success: true, value: _user } as Success<Partial<User>>;
     }
 

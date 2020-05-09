@@ -29,7 +29,6 @@ Base:
 - [x] ~~Unified response interface.~~
 - [x] ~~Written unit test.~~
 - [ ] Written e2e test.
-- [ ] Intergration to my blog.
 
 Optimization & Advanced:
 
