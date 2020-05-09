@@ -7,7 +7,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import { UserDto } from './user.dto';
 import { plainToClass } from 'class-transformer';
-import { UserDtoPipe } from '../../user-dto-pipe.pipe';
+import { UserDtoPipe } from './user-dto-pipe.pipe';
 
 @Controller('user')
 export class UserController {
