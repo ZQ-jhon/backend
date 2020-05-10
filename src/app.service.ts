@@ -8,10 +8,14 @@ export class AppService {
             all: {
                 '[EndPoint] For all endpoints             ': 'GET ${this.baseUrl}'
             },
+            auth: {
+                [Auth API] login                           : 'POST ${this.baseUrl}/login body: [UserDto]',
+                [Auth API] redeem token                    : 'POST ${this.baseUrl}/token header Bearer authorization'
+            },
             user: {
                 '[User API] Save a user                   ': 'POST ${this.baseUrl}/user body: [Comment]',
                 '[User API] Get one user with query userId': 'GET  ${this.baseUrl}/user?userId={id} ',
-                '[User API] Get user by limit & offset    ': 'GET  ${this.baseUrl}/user?offset={offset}&limit={limit}',
+                '[User API] Get user by limit & offset    ': 'GET  ${this.baseUrl}/user?offset={offset}&limit={limit}'
             },
             comment: {
                 '[comment  API] Save a comment            ': 'POST ${this.baseUrl}/comment body: {userId: string, content: string }',
