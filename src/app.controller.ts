@@ -7,6 +7,6 @@ export class AppController {
 
     @Get()
     public getAllEndpoint() {
-        return `<pre> ${this.appService.getAllEndpoints()} </pre>`;
+        return `<pre> ${JSON.stringify(this.appService.getAllEndpoints(), null, 4)} </pre>`;
     }
 }

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, Unique } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { Comment } from '../comment/comment.entity';
 

@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { combineLatest, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-import { v4 } from 'uuid';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { makeObservable } from '../../util/make-observable';
 import { Comment } from '../comment/comment.entity';
@@ -15,17 +14,8 @@ export class UserService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         @InjectRepository(Comment)
-        private readonly commentRepository: Repository<Comment>,
-    ) { }
-
-    public save(user: User) {
-        if (!user.id) {
-            user.id = v4();
-        }
-        const save$ = makeObservable(this.userRepository.save(user));
-        const error$ = errThrowerBuilder(new Error('用户已存在'), '用户已存在，无法重复创建', HttpStatus.BAD_REQUEST);
-        return this.checkUserIsExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
-    }
+        private readonly commentRepository: Repository<Comment>
+    ) {}
     public findByOffsetAndLimit(offset = 0, limit = 10) {
         const builder = this.userRepository
             .createQueryBuilder('user')
@@ -39,40 +29,19 @@ export class UserService {
     }
 
     /**
-     * check user is exist
-     * @returns Observable<boolean>
+     *
+     * @see `user.entity.ts`
+     * UserId & Username is unique property in user table
      */
-    public checkUserIsExist(user: User) {
-        return makeObservable(
-            this.userRepository
-                .createQueryBuilder('user')
-                .where('user.username = :id', { id: user.username })
-                .getOne()
-        ).pipe(map(u => !!u));
-    }
-
-    public findOne(userIdOrUsername: string) {
-        console.log(userIdOrUsername);
+    public findOne(userIdOrName: string) {
         const userPromise = this.userRepository
             .createQueryBuilder('user')
             .select(['user.username', 'user.id', 'user.createdAt'])
-            .where('user.id = :uid OR user.username = :username', { uid: userIdOrUsername, username: userIdOrUsername })
+            .where('user.id = :property OR user.username = :property', { property: userIdOrName })
             .getOne();
-            userPromise.then(e => console.log(e));
         return makeObservable(userPromise).pipe(
-            switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrUsername} 不存在`))),
-            catchError(err => errThrowerBuilder(err, `用户 ${userIdOrUsername} 不存在`, HttpStatus.NOT_FOUND))
-        );
-    }
-
-    public findUserByUsername(username: string) {
-        const promise = this.userRepository
-            .createQueryBuilder('user')
-            .select(['user.username'])
-            .where('user.username = :username', { username })
-            .getOne();
-        return makeObservable(promise).pipe(
-            catchError(err => errThrowerBuilder(err, `用户 ${username} 已存在，不允许重复创建`, HttpStatus.BAD_REQUEST))
+            switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrName} 不存在`))),
+            catchError(err => errThrowerBuilder(err, `用户 ${userIdOrName} 不存在`, HttpStatus.NOT_FOUND))
         );
     }
 
@@ -102,10 +71,10 @@ export class UserService {
     /**
      * 根据用户 id 获取用户，附带最近的 10 条 comment 记录
      */
-    public getUserWithLatestComment(userIdOrUsername: string, offset = 0, limit = 10) {
+    public getUserWithLatestComment(userId: string, offset = 0, limit = 10) {
         // TODO: try using innerJoin for connect `user` & `comment`
-        const user$ = this.findOne(userIdOrUsername) as Observable<User>;
-        const comment$ = this.getCommentsByUserId(userIdOrUsername, offset, limit);
+        const user$ = this.findOne(userId) as Observable<User>;
+        const comment$ = this.getCommentsByUserId(userId, offset, limit);
         return combineLatest([user$, comment$]).pipe(
             map(([user, comment]) => {
                 user.comment = comment || [];

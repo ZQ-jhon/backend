@@ -26,4 +26,4 @@ import { UserModule } from './modules/user/user.module';
     providers: [AppService],
     exports: [AuthModule],
 })
-export class AppModule { }
+export class AppModule {}

@@ -4,12 +4,13 @@ import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { Success } from '../../interfaces/success.interface';
 import { User } from '../user/user.entity';
 import { AuthService } from './auth.service';
+import { UserDtoPipe } from '../user/user-dto-pipe.pipe';
+import { UserDto } from '../user/user.dto';
+import { plainToClass } from 'class-transformer';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-    ) {}
+    constructor(private readonly authService: AuthService) {}
     @Post('login')
     @ApiCreatedResponse()
     public async login(@Body() body: { username: string; password: string }) {
@@ -20,7 +21,7 @@ export class AuthController {
                 HttpStatus.PAYMENT_REQUIRED
             ).toPromise();
         }
-        const user = await this.authService.tryLogin(body).toPromise();
+        const user = await this.authService.login(body).toPromise();
         if (!!user) {
             const token = this.authService.signJWT(body.username, user.id);
             return { success: true, value: token } as Success<Partial<User>>;
@@ -30,5 +31,15 @@ export class AuthController {
     @ApiBearerAuth()
     public refreshToken(@Headers('authorization') authorization: string) {
         return { success: true, value: this.authService.refreshToken(authorization.split(' ')[1]) };
+    }
+
+    /**
+     * 创建 User
+     */
+    @Post('user')
+    @ApiCreatedResponse()
+    public async create(@Body(new UserDtoPipe()) user: UserDto) {
+        const _user = await this.authService.createUser(plainToClass(User, user)).toPromise();
+        return { success: true, value: _user } as Success<Partial<User>>;
     }
 }

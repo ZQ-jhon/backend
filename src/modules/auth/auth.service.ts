@@ -3,29 +3,30 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { makeObservable } from '../../util/make-observable';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-    ) { }
+        private readonly userRepository: Repository<User>
+    ) {}
     /**
      * matchOneByPayload
      */
-    public tryLogin(payload: { username: string; password: string }) {
+    public login(payload: { username: string; password: string }) {
         const promise = this.userRepository
             .createQueryBuilder('user')
             .where(`user.password = :pwd AND user.username = :username`, {
                 pwd: payload.password,
                 username: payload.username,
             })
-            .select(['user.id', 'user.username'])
+            .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
         return makeObservable(promise).pipe(
             switchMap(u =>
@@ -35,6 +36,26 @@ export class AuthService {
             )
         );
     }
+
+    public isUserExist(user: User) {
+        return makeObservable(
+            this.userRepository
+                .createQueryBuilder('user')
+                .where('user.username = :id OR user.username = :name', { id: user.id, name: user.username })
+                .getOne()
+        ).pipe(map(user => !isNil(user)));
+    }
+
+    public createUser(user: User) {
+        if (!user.createdAt) {
+            user.createdAt = new Date();
+        }
+        // 允许同名用户，每次创建都分配新的 uuid , 因此，不用查找 db 是否存在同 username 用户
+        const save$ = makeObservable(this.userRepository.save(user));
+        const error$ = errThrowerBuilder(new Error('用户已存在'), '用户已存在，无法重复创建', HttpStatus.BAD_REQUEST);
+        return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
+    }
+
     public signJWT(username: string, userId: string) {
         // 10 min
         // {
