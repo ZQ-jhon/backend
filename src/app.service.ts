@@ -14,7 +14,7 @@ export class AppService {
                 '[Auth API] Create user                     ': 'POST ' + this.baseUrl + '/auth/user body [UserDto]',
             },
             user: {
-                '[User API] GET one user                    ': 'GET  ' + this.baseUrl + '/user?${userIdOrUsername}',
+                '[User API] GET one user                    ': 'GET  ' + this.baseUrl + '/user/{userIdOrUsername}',
                 '[User API] GET users                       ': 'GET  ' + this.baseUrl + '/user?offset={offset}&limit={limit}',
             },
             comment: {
