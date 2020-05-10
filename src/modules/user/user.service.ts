@@ -1,14 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { combineLatest, throwError, Observable, of } from 'rxjs';
-import { catchError, map, tap, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable, of, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { makeObservable } from '../../util/make-observable';
 import { Comment } from '../comment/comment.entity';
 import { User } from './user.entity';
-import { AuthService } from './auth.service';
 
 @Injectable()
 export class UserService {
@@ -17,8 +16,7 @@ export class UserService {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Comment)
         private readonly commentRepository: Repository<Comment>,
-        private readonly authService: AuthService
-    ) {}
+    ) { }
 
     public save(user: User) {
         if (!user.id) {
@@ -54,11 +52,13 @@ export class UserService {
     }
 
     public findOne(userIdOrUsername: string) {
+        console.log(userIdOrUsername);
         const userPromise = this.userRepository
             .createQueryBuilder('user')
             .select(['user.username', 'user.id', 'user.createdAt'])
             .where('user.id = :uid OR user.username = :username', { uid: userIdOrUsername, username: userIdOrUsername })
             .getOne();
+            userPromise.then(e => console.log(e));
         return makeObservable(userPromise).pipe(
             switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrUsername} 不存在`))),
             catchError(err => errThrowerBuilder(err, `用户 ${userIdOrUsername} 不存在`, HttpStatus.NOT_FOUND))
@@ -74,10 +74,6 @@ export class UserService {
         return makeObservable(promise).pipe(
             catchError(err => errThrowerBuilder(err, `用户 ${username} 已存在，不允许重复创建`, HttpStatus.BAD_REQUEST))
         );
-    }
-
-    public countAllUser() {
-        return makeObservable(this.userRepository.findAndCount()).pipe(map(([users, counter]) => counter));
     }
 
     /**
@@ -115,27 +111,6 @@ export class UserService {
                 user.comment = comment || [];
                 return user;
             })
-        );
-    }
-
-    /**
-     * matchOneByPayload
-     */
-    public tryLogin(payload: { username: string; password: string }) {
-        const promise = this.userRepository
-            .createQueryBuilder('user')
-            .where(`user.password = :pwd AND user.username = :username`, {
-                pwd: payload.password,
-                username: payload.username,
-            })
-            .select(['user.id', 'user.username'])
-            .getOne();
-        return makeObservable(promise).pipe(
-            switchMap(u =>
-                !!u
-                    ? of(u)
-                    : errThrowerBuilder(new Error('Authorization failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)
-            )
         );
     }
 }

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
     imports: [
@@ -19,8 +20,10 @@ import { CommentModule } from './modules/comment/comment.module';
             entities: ['dist/**/**.entity{.ts,.js}'], // sb webpack
             synchronize: true,
         }),
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
+    exports: [AuthModule],
 })
-export class AppModule {}
+export class AppModule { }
