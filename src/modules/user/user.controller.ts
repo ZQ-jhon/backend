@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { isNullOrUndefined } from 'util';
 import { AuthGuard } from '../../auth.guard';
 import { Success } from '../../interfaces/success.interface';
 import { User } from './user.entity';
@@ -16,13 +17,16 @@ export class UserController {
     @Get()
     @ApiBearerAuth()
     public async getUserByQuery(@Query() query: { offset: number; limit: number }) {
+        if (isNullOrUndefined(query.offset) || isNullOrUndefined(query.limit)) {
+            throw new HttpException(`Need more query or parameter`, HttpStatus.BAD_REQUEST);
+        }
         const _users = await this.userService.findByOffsetAndLimit(query.offset, query.limit).toPromise();
         return { success: true, value: _users };
     }
 
-    @Get('/:id')
-    public async getUserByUserId(@Param('id') userId: string) {
-        const user = await this.userService.findOne(userId).toPromise();
+    @Get('/:userIdOrName')
+    public async getUserByUserId(@Param('userIdOrName') userIdOrName: string) {
+        const user = await this.userService.findOne(userIdOrName).toPromise();
         return { success: true, value: user };
     }
 
