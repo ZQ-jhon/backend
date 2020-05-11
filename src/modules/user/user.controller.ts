@@ -1,7 +1,7 @@
 import { Controller, Get, HttpException, HttpStatus, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { isNullOrUndefined } from 'util';
-import { AuthGuard } from '../../auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { Success } from '../../interfaces/success.interface';
 import { User } from './user.entity';
 import { UserService } from './user.service';

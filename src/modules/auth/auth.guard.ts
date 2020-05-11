@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { isNil } from 'lodash';
-import { UserService } from './modules/user/user.service';
-import { verifyAuthHeader } from './util/verify-auth-headers';
+import { UserService } from '../user/user.service';
+import { verifyAuthHeader } from '../../util/verify-auth-headers';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

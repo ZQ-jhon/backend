@@ -3,7 +3,7 @@ import { Success } from '../../interfaces/success.interface';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
-import { AuthGuard } from '../../auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 @Controller('comment')
 @UseGuards(AuthGuard)
 export class CommentController {
