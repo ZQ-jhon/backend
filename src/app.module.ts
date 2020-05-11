@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { UserModule } from './modules/user/user.module';
+import { LogModule } from './modules/log/log.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LogInterceptor } from './modules/log/log.interceptor';
 
 @Module({
     imports: [
@@ -21,9 +24,16 @@ import { UserModule } from './modules/user/user.module';
             synchronize: true,
         }),
         AuthModule,
+        LogModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        // {
+        //     provide: APP_INTERCEPTOR,
+        //     useClass: LogInterceptor,
+        // },
+    ],
     exports: [AuthModule],
 })
-export class AppModule {}
+export class AppModule { }

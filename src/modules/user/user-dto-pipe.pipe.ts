@@ -12,11 +12,12 @@ export class UserDtoPipe implements PipeTransform {
      * value 实际入参
      * metatype 期望的入参类型
      */
-    async transform(value: any, { metatype }: ArgumentMetadata) {
-        if (!metatype || !this.toValidate(metatype)) {
+    async transform(value: any, metadata: ArgumentMetadata) {
+        // { metatype: [Function: UserDto], type: 'body', data: undefined }
+        if (!metadata.metatype || !this.toValidate(metadata.metatype)) {
             return value;
         }
-        const object = plainToClass(metatype, value);
+        const object = plainToClass(metadata.metatype, value);
         const errors = await validate(object);
         if (errors.length > 0) {
             throw new BadRequestException(errors.reduce((acc, err) => acc + JSON.stringify(err), ''));
