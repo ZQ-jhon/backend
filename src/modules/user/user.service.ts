@@ -49,6 +49,20 @@ export class UserService {
      * 根据用户 id 获取最近 10 条日志
      */
     public getCommentsByUserId(userId: string, offset = 0, limit = 0) {
+        // SELECT
+        //     c.id cId,
+        //     c.user_id uId,
+        //     c.content content,
+        //     c.commented_at commented_at
+        // FROM
+        //     comment c
+        //     INNER JOIN user u ON u.id = c.user_id
+        // WHERE
+        //     u.username = 'ZQ-JHON'
+        // ORDER BY
+        //     c.commented_at ASC
+        // LIMIT
+        //     10;
         const commentPromise = this.commentRepository
             .createQueryBuilder('comment')
             .select(['comment.id', 'comment.content', 'comment.commentedAt'])
