@@ -51,6 +51,7 @@ export class UserService {
     public getCommentsByUserId(userId: string, offset = 0, limit = 0) {
         const commentPromise = this.commentRepository
             .createQueryBuilder('comment')
+            .select(['comment.id', 'comment.content', 'comment.commentedAt'])
             .orderBy('commented_at', 'DESC')
             .where(`comment.userId = :userId`, { userId })
             .offset(offset)

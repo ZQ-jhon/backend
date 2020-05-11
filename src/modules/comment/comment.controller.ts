@@ -1,9 +1,11 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { Success } from '../../interfaces/success.interface';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
+import { AuthGuard } from '../../auth.guard';
 @Controller('comment')
+@UseGuards(AuthGuard)
 export class CommentController {
     constructor(private readonly commentService: CommentService) {}
 
