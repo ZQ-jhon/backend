@@ -1,4 +1,4 @@
 export interface CustomResponse {
-    status: number;
-    message: string;
+    status?: number;
+    message?: string;
 }

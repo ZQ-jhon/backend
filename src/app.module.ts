@@ -6,8 +6,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { UserModule } from './modules/user/user.module';
 import { LogModule } from './modules/log/log.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LogInterceptor } from './modules/log/log.interceptor';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 @Module({
     imports: [
@@ -29,10 +29,10 @@ import { LogInterceptor } from './modules/log/log.interceptor';
     controllers: [AppController],
     providers: [
         AppService,
-        // {
-        //     provide: APP_INTERCEPTOR,
-        //     useClass: LogInterceptor,
-        // },
+        {
+            provide: APP_FILTER,
+            useClass: HttpExceptionFilter,
+        },
     ],
     exports: [AuthModule],
 })

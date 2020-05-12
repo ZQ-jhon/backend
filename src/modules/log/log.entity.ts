@@ -17,10 +17,10 @@ export class Log {
     operatorId: string;
 
     @Column('simple-json')
-    request: CustomRequest;
+    request: CustomRequest = {};
 
     @Column('simple-json')
-    response: CustomResponse;
+    response: CustomResponse = {};
     @Column()
     content: string;
 }

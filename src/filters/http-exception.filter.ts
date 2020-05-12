@@ -1,5 +1,10 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { LogService } from '../modules/log/log.service';
+import { LogDTO } from '../modules/log/log.dto';
+import { verifyAuthHeader } from '../util/verify-auth-headers';
+import { CustomRequest } from 'src/interfaces/custom-request.interface';
+import { CustomResponse } from 'src/interfaces/custom-response.interface';
 
 /**
  *
@@ -29,16 +34,38 @@ import { Request, Response } from 'express';
  */
 @Catch()
 export class HttpExceptionFilter<T> implements ExceptionFilter {
-    catch(exception: HttpException, host: ArgumentsHost) {
+    constructor(
+        private readonly logService: LogService,
+    ) { }
+    async catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
-        const status = exception.getStatus();
-        response.status(status).json({
+        const status = exception?.getStatus() || 400;
+        const err = {
             statusCode: status,
             timestamp: new Date().toISOString(),
             path: request.url,
             message: exception.message,
-        });
+        };
+        const dto = {
+            content: err.message,
+            operatorId: verifyAuthHeader(request.headers.authorization),
+            request: {
+                path: request.path,
+                method: request.method,
+                userAgent: request.headers["user-agent"],
+                body: request.body,
+                query: request.query,
+                params: request.params,
+                contentType: request.headers["content-type"],
+            } as CustomRequest,
+            response: {
+                status: response.statusCode,
+                message: response.statusMessage
+            } as CustomResponse,
+        } as LogDTO;
+        await this.logService.save(dto).toPromise();
+        response.status(status).json(err);
     }
 }
