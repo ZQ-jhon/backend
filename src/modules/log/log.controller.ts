@@ -6,9 +6,7 @@ import { Log } from './log.entity';
 
 @Controller('log')
 export class LogController {
-    constructor(
-        private readonly logService: LogService,
-    ) { }
+    constructor(private readonly logService: LogService) {}
 
     @Post()
     public async save(@Body() logDTO: LogDTO) {

@@ -36,4 +36,4 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
     ],
     exports: [AuthModule],
 })
-export class AppModule { }
+export class AppModule {}

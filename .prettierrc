@@ -4,8 +4,11 @@
   "singleQuote": true,
   "printWidth": 120,
   "insertSpaceBeforeFunctionParenthesis": true,
-  "TrailingCooma": "all",
   "bracketSpacing": true,
   "useTabs": false,
   "markdown": true,
+  "space-in-parens": [
+        1,
+        "always"
+  ]
 }

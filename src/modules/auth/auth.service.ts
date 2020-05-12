@@ -51,10 +51,12 @@ export class AuthService {
             user.createdAt = new Date();
         }
         // 允许同名用户，每次创建都分配新的 uuid , 因此，不用查找 db 是否存在同 username 用户
-        const save$ = makeObservable(this.userRepository.save(user)).pipe(map(user => {
-            delete user.password;
-            return user;
-        }));
+        const save$ = makeObservable(this.userRepository.save(user)).pipe(
+            map(user => {
+                delete user.password;
+                return user;
+            })
+        );
         const error$ = errThrowerBuilder(new Error('用户已存在'), '用户已存在，无法重复创建', HttpStatus.BAD_REQUEST);
         return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
     }

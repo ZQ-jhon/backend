@@ -13,8 +13,8 @@ import { throwError } from 'rxjs';
 export class LogService {
     constructor(
         @InjectRepository(Log)
-        private readonly logRepository: Repository<Log>,
-    ) { }
+        private readonly logRepository: Repository<Log>
+    ) {}
 
     public save(dto: LogDTO) {
         const log = { ...new Log(v4()), ...dto };
