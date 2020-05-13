@@ -33,10 +33,10 @@ Base:
 Optimization & Advanced:
 
 - [ ] Custom middleware and decorator. 
-- [ ] Exception Filter
-- [ ] Pipe
-- [ ] Guard
+- [x] ~~Exception Filterx] Pipe~~
+- [x] ~~Guard~~
 - [ ] Interceptor
+- [ ] caching by Redis
 
 ## Test Coverage in unit-test
 | File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
