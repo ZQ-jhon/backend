@@ -2,7 +2,7 @@
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 
 ## 启动 mysql 服务
-`$ service start mysql ` 
+`$ service mysql start` 
 `$ mysql -u root -p 1234`
 
 
