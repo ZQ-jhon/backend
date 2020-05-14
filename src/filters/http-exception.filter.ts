@@ -48,7 +48,7 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
         };
         const dto = {
             content: err.message,
-            operatorId: verifyAuthHeader(request.headers.authorization),
+            operatorId: request.headers?.authorization ? verifyAuthHeader(request.headers?.authorization) : '',
             request: {
                 path: request.path,
                 method: request.method,
