@@ -1,10 +1,16 @@
 ## 重置 mysql 密码
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
 
+## 启动 mysql 服务
+`$ service start mysql ` 
+`$ mysql -u root -p 1234`
+
+
 ## 基本步骤
 1. 连接 mysql
 2. CREATE TABLE
 3. reflect relation: INSERT/REMOVE/UPDATE/SELECT => save/remove/update/has 
+
 
 ## Swagger
 [http://127.0.0.1/docs](http://127.0.0.1/docs)
