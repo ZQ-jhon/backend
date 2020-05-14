@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { makeObservable } from '../../util/make-observable';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, defer } from 'rxjs';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
@@ -50,7 +50,6 @@ export class AuthService {
         if (!user.createdAt) {
             user.createdAt = new Date();
         }
-        // 允许同名用户，每次创建都分配新的 uuid , 因此，不用查找 db 是否存在同 username 用户
         const save$ = makeObservable(this.userRepository.save(user)).pipe(
             map(user => {
                 delete user.password;
@@ -58,7 +57,9 @@ export class AuthService {
             })
         );
         const error$ = errThrowerBuilder(new Error('用户已存在'), '用户已存在，无法重复创建', HttpStatus.BAD_REQUEST);
-        return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
+        return this.isUserExist(user).pipe(
+            switchMap(exist => exist ? error$ : defer(() => save$)),
+        );
     }
 
     public signJWT(username: string, userId: string) {
