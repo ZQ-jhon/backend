@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { combineLatest, Observable, of, throwError } from 'rxjs';
+import { combineLatest, Observable, of, throwError, from } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-import { makeObservable } from '../../util/make-observable';
 import { Comment } from '../comment/comment.entity';
 import { User } from './user.entity';
 
@@ -22,7 +21,7 @@ export class UserService {
             .offset(offset)
             .limit(limit)
             .getMany();
-        return makeObservable<User | User[]>(builder).pipe(
+        return from(builder).pipe(
             catchError(err => of(new HttpException(`分页查询用户出错: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))),
         );
     }
@@ -38,7 +37,7 @@ export class UserService {
             .select(['user.username', 'user.id', 'user.createdAt'])
             .where('user.id = :property OR user.username = :property', { property: userIdOrName })
             .getOne();
-        return makeObservable(userPromise).pipe(
+        return from(userPromise).pipe(
             switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrName} 不存在`))),
             catchError(err => of(new HttpException(`用户 ${userIdOrName} 不存在: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))),
         );
@@ -70,7 +69,7 @@ export class UserService {
             .offset(offset)
             .limit(limit)
             .getMany();
-        return makeObservable(commentPromise).pipe(
+        return from(commentPromise).pipe(
             catchError(err =>
                 throwError(
                     new HttpException(

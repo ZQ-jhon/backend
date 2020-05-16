@@ -2,9 +2,8 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
-import { makeObservable } from '../../util/make-observable';
 import { switchMap, map } from 'rxjs/operators';
-import { of, defer } from 'rxjs';
+import { of, defer, from } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
 
@@ -27,13 +26,13 @@ export class AuthService {
             })
             .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
-        return makeObservable(promise).pipe(
+        return from(promise).pipe(
             switchMap(u => of(!!u ? u : new HttpException('Authorization failed!', HttpStatus.FORBIDDEN))),
         );
     }
 
     public isUserExist(user: User) {
-        return makeObservable(
+        return from(
             this.userRepository
                 .createQueryBuilder('user')
                 .where('user.username = :id OR user.username = :name', { id: user.id, name: user.username })
@@ -45,7 +44,7 @@ export class AuthService {
         if (!user.createdAt) {
             user.createdAt = new Date();
         }
-        const save$ = makeObservable(this.userRepository.save(user)).pipe(
+        const save$ = from(this.userRepository.save(user)).pipe(
             map(user => {
                 delete user.password;
                 return user;

@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { throwError, of } from 'rxjs';
+import { throwError, of, from } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
-import { makeObservable } from '../../util/make-observable';
 import { Comment } from './comment.entity';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class CommentService {
         if (!comment.id) {
             comment.id = v4();
         }
-        return makeObservable(this.commentRepository.save(comment)).pipe(
+        return from(this.commentRepository.save(comment)).pipe(
             catchError(err => of(new HttpException(`保存评论出错: ${err?.message}`, HttpStatus.SERVICE_UNAVAILABLE))),
         );
     }
@@ -25,6 +24,6 @@ export class CommentService {
         if (!commentId) {
             return throwError(new HttpException(`没有 commentId，无法进行精确日志查询!`, HttpStatus.PAYMENT_REQUIRED));
         }
-        return makeObservable(this.commentRepository.findOne(commentId));
+        return from(this.commentRepository.findOne(commentId));
     }
 }
