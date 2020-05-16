@@ -1,9 +1,9 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { makeObservable } from '../../util/make-observable';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { of, defer } from 'rxjs';
 import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -56,7 +56,7 @@ export class AuthService {
                 return user;
             })
         );
-        const error$ = errThrowerBuilder(new Error('用户已存在'), '用户已存在，无法重复创建', HttpStatus.BAD_REQUEST);
+        const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
         return this.isUserExist(user).pipe(
             switchMap(exist => exist ? error$ : defer(() => save$)),
         );
