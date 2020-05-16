@@ -22,7 +22,9 @@ export class UserService {
             .limit(limit)
             .getMany();
         return from(builder).pipe(
-            catchError(err => of(new HttpException(`分页查询用户出错: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))),
+            catchError(err =>
+                of(new HttpException(`分页查询用户出错: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))
+            )
         );
     }
 
@@ -39,7 +41,9 @@ export class UserService {
             .getOne();
         return from(userPromise).pipe(
             switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrName} 不存在`))),
-            catchError(err => of(new HttpException(`用户 ${userIdOrName} 不存在: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))),
+            catchError(err =>
+                of(new HttpException(`用户 ${userIdOrName} 不存在: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))
+            )
         );
     }
 

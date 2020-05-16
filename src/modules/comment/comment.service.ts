@@ -17,7 +17,7 @@ export class CommentService {
             comment.id = v4();
         }
         return from(this.commentRepository.save(comment)).pipe(
-            catchError(err => of(new HttpException(`保存评论出错: ${err?.message}`, HttpStatus.SERVICE_UNAVAILABLE))),
+            catchError(err => of(new HttpException(`保存评论出错: ${err?.message}`, HttpStatus.SERVICE_UNAVAILABLE)))
         );
     }
     public getComment(commentId: string) {

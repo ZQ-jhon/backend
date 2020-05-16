@@ -15,9 +15,11 @@ export class AuthController {
     @ApiCreatedResponse()
     public async login(@Body() body: { username: string; password: string }) {
         if (!body.username || !body.password) {
-            return await of(new HttpException('More PAYMENT_REQUIRED in login process.', HttpStatus.PAYMENT_REQUIRED)).toPromise();
+            return await of(
+                new HttpException('More PAYMENT_REQUIRED in login process.', HttpStatus.PAYMENT_REQUIRED)
+            ).toPromise();
         }
-        const user = await this.authService.login(body).toPromise() as User;
+        const user = (await this.authService.login(body).toPromise()) as User;
         if (!!user) {
             const token = this.authService.signJWT(body.username, user?.id);
             return { success: true, value: token } as Success<Partial<User>>;

@@ -13,7 +13,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
-    ) { }
+    ) {}
     /**
      * matchOneByPayload
      */
@@ -27,7 +27,7 @@ export class AuthService {
             .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
         return from(promise).pipe(
-            switchMap(u => of(!!u ? u : new HttpException('Authorization failed!', HttpStatus.FORBIDDEN))),
+            switchMap(u => of(!!u ? u : new HttpException('Authorization failed!', HttpStatus.FORBIDDEN)))
         );
     }
 
@@ -51,9 +51,7 @@ export class AuthService {
             })
         );
         const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
-        return this.isUserExist(user).pipe(
-            switchMap(exist => exist ? error$ : defer(() => save$)),
-        );
+        return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : defer(() => save$))));
     }
 
     public signJWT(username: string, userId: string) {
