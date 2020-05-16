@@ -5,7 +5,6 @@ import { User } from '../user/user.entity';
 import { makeObservable } from '../../util/make-observable';
 import { switchMap, map } from 'rxjs/operators';
 import { of, defer } from 'rxjs';
-import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
 
@@ -15,7 +14,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
-    ) {}
+    ) { }
     /**
      * matchOneByPayload
      */
@@ -29,11 +28,7 @@ export class AuthService {
             .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
         return makeObservable(promise).pipe(
-            switchMap(u =>
-                !!u
-                    ? of(u)
-                    : errThrowerBuilder(new Error('Authorization failed!'), '用户名或密码错误', HttpStatus.FORBIDDEN)
-            )
+            switchMap(u => of(!!u ? u : new HttpException('Authorization failed!', HttpStatus.FORBIDDEN))),
         );
     }
 

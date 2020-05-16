@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { Success } from '../../interfaces/success.interface';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
-import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { AuthGuard } from '../auth/auth.guard';
+import { of } from 'rxjs';
 @Controller('comment')
 @UseGuards(AuthGuard)
 export class CommentController {
@@ -26,7 +26,7 @@ export class CommentController {
     public async getCommentByUserId(@Param('id') id: string) {
         const result = await this.commentService.getComment(id).toPromise();
         if (!result) {
-            return errThrowerBuilder(new Error('没有查询到结果'), `没有查询到结果 ${id}`, 404);
+            return of(new HttpException(`Not found ${id}`, HttpStatus.NOT_FOUND));
         }
         return { success: true, value: result } as Success<Comment>;
     }

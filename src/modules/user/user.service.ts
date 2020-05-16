@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { combineLatest, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { makeObservable } from '../../util/make-observable';
 import { Comment } from '../comment/comment.entity';
 import { User } from './user.entity';
@@ -24,7 +23,7 @@ export class UserService {
             .limit(limit)
             .getMany();
         return makeObservable<User | User[]>(builder).pipe(
-            catchError(err => errThrowerBuilder(err, `分页查询用户出错`, HttpStatus.INTERNAL_SERVER_ERROR))
+            catchError(err => of(new HttpException(`分页查询用户出错: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))),
         );
     }
 
@@ -41,7 +40,7 @@ export class UserService {
             .getOne();
         return makeObservable(userPromise).pipe(
             switchMap(user => (user instanceof User ? of(user) : throwError(`${userIdOrName} 不存在`))),
-            catchError(err => errThrowerBuilder(err, `用户 ${userIdOrName} 不存在`, HttpStatus.NOT_FOUND))
+            catchError(err => of(new HttpException(`用户 ${userIdOrName} 不存在: ${err?.message}`, HttpStatus.INTERNAL_SERVER_ERROR))),
         );
     }
 

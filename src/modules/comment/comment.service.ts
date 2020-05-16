@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
-import { errThrowerBuilder } from '../../util/err-thrower-builder';
 import { makeObservable } from '../../util/make-observable';
 import { Comment } from './comment.entity';
 
@@ -19,7 +18,7 @@ export class CommentService {
             comment.id = v4();
         }
         return makeObservable(this.commentRepository.save(comment)).pipe(
-            catchError(err => errThrowerBuilder(err, '保存评论出错', HttpStatus.SERVICE_UNAVAILABLE))
+            catchError(err => of(new HttpException(`保存评论出错: ${err?.message}`, HttpStatus.SERVICE_UNAVAILABLE))),
         );
     }
     public getComment(commentId: string) {
