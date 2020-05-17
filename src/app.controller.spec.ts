@@ -24,7 +24,7 @@ describe('AppController', () => {
         it('Verify endpoint includes KEYS:', () => {
             const returns = appService.getAllEndpoints();
             expect(returns).toBeTruthy();
-            expect(/.*?all.|\r*user.|\r*comment/gm.test(returns)).toBeTruthy();
+            expect(/.*?all.|\r*user.|\r*comment/gm.test(JSON.stringify(returns))).toBeTruthy();
         });
     });
 });

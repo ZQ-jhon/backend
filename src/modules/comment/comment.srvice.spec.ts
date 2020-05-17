@@ -2,9 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
-import { CommentController } from './comment.controller';
+import { of } from 'rxjs';
 
 describe('CommentService', () => {
+    const service = {
+        setComment: () => of(new Comment()),
+        getComment: () => of(new Comment()),
+    };
     let commentService: CommentService;
     beforeEach(async () => {
         const app: TestingModule = await Test.createTestingModule({
@@ -18,9 +22,11 @@ describe('CommentService', () => {
                     },
                 },
             ],
-            controllers: [CommentController],
-        }).compile();
-        commentService = app.get(CommentService);
+        })
+            .overrideProvider(CommentService)
+            .useValue(service)
+            .compile();
+        commentService = app.get<CommentService>(CommentService);
     });
 
     it('CommentService has been defined', async () => {

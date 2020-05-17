@@ -1,15 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { LogService } from './log.service';
+import { Log } from './log.entity';
 
 describe('LogService', () => {
-    let service: LogService;
+    const service = { save: () => new Log(), findOne: () => new Log() };
 
     beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+        await Test.createTestingModule({
             providers: [LogService],
-        }).compile();
-
-        service = module.get<LogService>(LogService);
+        })
+            .overrideProvider(LogService)
+            .useValue(service)
+            .compile();
     });
 
     it('should be defined', () => {

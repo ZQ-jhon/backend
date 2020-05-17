@@ -39,27 +39,42 @@ Base:
 Optimization & Advanced:
 
 - [ ] Custom middleware and decorator. 
-- [x] ~~Exception Filterx] Pipe~~
+- [x] ~~Exception Filter~~
+- [x] ~~Pipe~~
 - [x] ~~Guard~~
-- [ ] Interceptor
+~~Interceptor~~
 - [ ] caching by Redis
 
 ## Test Coverage in unit-test
-| File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
-| ---------------------- | ------- | -------- | ------- | ------- | ----------------- |
-| All files              | 88.24   | 50       | 63.16   | 87.14   |
-| src                    | 92.86   | 100      | 75      | 90      |
-| app.controller.ts      | 87.5    | 100      | 50      | 83.33   | 10                |
-| app.service.ts         | 100     | 100      | 100     | 100     |
-| src/modules/comment    | 88      | 50       | 70      | 86.05   |
-| comment.controller.ts  | 93.75   | 50       | 100     | 92.86   | 27                |
-| comment.entity.ts      | 85.71   | 100      | 33.33   | 81.82   | 20-21             |
-| comment.service.ts     | 85      | 50       | 75      | 83.33   | 19,22,27          |
-| src/modules/user       | 78.57   | 100      | 0       | 81.82   |
-| user.entity.ts         | 78.57   | 100      | 0       | 81.82   | 19-20             |
-| src/util               | 100     | 100      | 100     | 100     |
-| err-thrower-builder.ts | 100     | 100      | 100     | 100     |
-| make-observable.ts     | 100     | 100      | 100     | 100     |
+| File                        | % Stmts   | % Branch   | % Funcs   | % Lines   | Uncovered Line #s   |
+| --------------------------- | --------- | ---------- | --------- | --------- | ------------------- |
+| All files                   | 57.76     | 1.35       | 15        | 54.43     |
+| src                         | 92.86     | 100        | 75        | 90        |
+| app.controller.ts           | 87.5      | 100        | 50        | 83.33     | 10                  |
+| app.service.ts              | 100       | 100        | 100       | 100       |
+| src/filters                 | 40        | 0          | 0         | 30.77     |
+| http-exception.filter.ts    | 40        | 0          | 0         | 30.77     | 37-67               |
+| src/modules/auth            | 43.42     | 0          | 5.56      | 39.71     |
+| auth.controller.ts          | 62.5      | 0          | 25        | 59.09     | 17-25,31,40-41      |
+| auth.guard.ts               | 38.89     | 0          | 0         | 31.25     | 8-22                |
+| auth.service.ts             | 32.35     | 0          | 0         | 30        | 13-79               |
+| src/modules/comment         | 77.55     | 10         | 40        | 73.81     |
+| comment.controller.ts       | 94.12     | 50         | 100       | 93.33     | 29                  |
+| comment.entity.ts           | 85.71     | 100        | 33.33     | 81.82     | 20-21               |
+| comment.service.ts          | 55.56     | 0          | 0         | 50        | 13-27               |
+| src/modules/log             | 70        | 0          | 11.11     | 74.36     |
+| log.controller.ts           | 81.82     | 100        | 33.33     | 77.78     | 13,18               |
+| log.dto.ts                  | 100       | 100        | 100       | 100       |
+| log.entity.ts               | 68.75     | 100        | 0         | 90        | 8                   |
+| log.service.ts              | 57.89     | 0          | 0         | 56.25     | 15-28               |
+| src/modules/user            | 50.82     | 0          | 0         | 47.17     |
+| user-dto-pipe.pipe.ts       | 37.5      | 0          | 0         | 30.77     | 17-30               |
+| user.dto.ts                 | 100       | 100        | 100       | 100       |
+| user.entity.ts              | 78.57     | 100        | 0         | 81.82     | 19-20               |
+| user.service.ts             | 37.04     | 0          | 0         | 32        | 13-98               |
+| src/util                    | 33.33     | 0          | 0         | 33.33     |
+| verify-auth-headers.ts      | 33.33     | 0          | 0         | 33.33     | 6-17                |
+| --------------------------- | --------- | ---------- | --------- | --------- | ------------------- |
 
 ## Questions in development
 - OOM killer in linux 
