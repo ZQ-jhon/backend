@@ -3,8 +3,7 @@ import { Request, Response } from 'express';
 import { LogService } from '../modules/log/log.service';
 import { LogDTO } from '../modules/log/log.dto';
 import { verifyAuthHeader } from '../util/verify-auth-headers';
-import { CustomRequest } from 'src/interfaces/custom-request.interface';
-import { CustomResponse } from 'src/interfaces/custom-response.interface';
+import { CustomResponse } from '../interfaces/custom-response.interface';
 
 /**
  *
@@ -57,7 +56,7 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
                 query: request.query,
                 params: request.params,
                 contentType: request.headers['content-type'],
-            } as CustomRequest,
+            } as Partial<Request>,
             response: {
                 status: response.statusCode,
                 message: response.statusMessage,
