@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
 import { v4 } from 'uuid';
-import { CustomRequest } from 'src/interfaces/custom-request.interface';
-import { CustomResponse } from 'src/interfaces/custom-response.interface';
+import { CustomResponse } from '../../interfaces/custom-response.interface';
 @Entity()
 export class Log {
     constructor(id?: string) {
@@ -17,7 +16,7 @@ export class Log {
     operatorId: string;
 
     @Column('simple-json')
-    request: CustomRequest = {};
+    request: Partial<Request> = {};
 
     @Column('simple-json')
     response: CustomResponse = {};
