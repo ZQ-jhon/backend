@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-export function logger(req: Request, res: Response, next) {
+export function logger(req: Request, res: Response, next: NextFunction) {
     console.log(req.url);
     next();
   };

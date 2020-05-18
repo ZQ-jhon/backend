@@ -4,9 +4,10 @@ import { LogController } from './log.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Log } from './log.entity';
 import { logger } from '../../middleware/logger.middleware';
+import { User } from '../user/user.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Log])],
+    imports: [TypeOrmModule.forFeature([Log, User])],
     providers: [LogService],
     controllers: [LogController],
     exports: [LogService, TypeOrmModule.forFeature([Log])],

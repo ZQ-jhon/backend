@@ -33,8 +33,8 @@ import { CustomResponse } from '../interfaces/custom-response.interface';
  */
 @Catch()
 export class HttpExceptionFilter<T> implements ExceptionFilter {
-    constructor(private readonly logService: LogService) {}
-    async catch(exception: HttpException, host: ArgumentsHost) {
+    constructor(private readonly logService: LogService) { }
+    catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
@@ -45,24 +45,29 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
             path: request.url,
             message: exception.message,
         };
-        const dto = {
-            content: err.message,
-            operatorId: request.headers?.authorization ? verifyAuthHeader(request.headers?.authorization) : '',
-            request: {
-                path: request.path,
-                method: request.method,
-                userAgent: request.headers['user-agent'],
-                body: request.body,
-                query: request.query,
-                params: request.params,
-                contentType: request.headers['content-type'],
-            } as Partial<Request>,
-            response: {
-                status: response.statusCode,
-                message: response.statusMessage,
-            } as CustomResponse,
-        } as LogDTO;
-        await this.logService.save(dto).toPromise();
-        response.status(status).json(err);
+        let operatorId, dto;
+        try {
+            operatorId = verifyAuthHeader(request.headers?.authorization);
+        } catch (err) {
+            dto = {
+                content: err.message,
+                operatorId: operatorId,
+                request: {
+                    path: request.path,
+                    method: request.method,
+                    userAgent: request.headers['user-agent'],
+                    body: request.body,
+                    query: request.query,
+                    params: request.params,
+                    contentType: request.headers['content-type'],
+                } as Partial<Request>,
+                response: {
+                    status: response.statusCode,
+                    message: response.statusMessage,
+                } as CustomResponse,
+            } as LogDTO;
+        }
+
+        this.logService.save(dto).subscribe(() => response.status(status).json(err));
     }
 }

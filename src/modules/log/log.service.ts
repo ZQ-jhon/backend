@@ -17,6 +17,9 @@ export class LogService {
 
     public save(dto: LogDTO) {
         const log = { ...new Log(v4()), ...dto } as Log;
+        if (!log.operatorId) {
+            log.operatorId = '';
+        }
         return from(this.logRepository.save(log)).pipe(catchError(err => throwError(err)));
     }
     public findOne(logId: string) {

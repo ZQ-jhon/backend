@@ -1,10 +1,12 @@
-import { Controller, Post, Get, Param, Body } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
 import { LogService } from './log.service';
 import { LogDTO } from './log.dto';
 import { Success } from 'src/interfaces/success.interface';
 import { Log } from './log.entity';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('log')
+@UseGuards(AuthGuard)
 export class LogController {
     constructor(private readonly logService: LogService) {}
 
