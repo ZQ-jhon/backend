@@ -1,9 +1,9 @@
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { switchMap, map } from 'rxjs/operators';
-import { of, defer, from } from 'rxjs';
+import { of, defer, from, throwError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
 
@@ -27,7 +27,7 @@ export class AuthService {
             .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
         return from(promise).pipe(
-            switchMap(u => of(!!u ? u : new HttpException('Authorization failed!', HttpStatus.FORBIDDEN)))
+            switchMap(u => !!u ? of(u) : throwError(new HttpException('Authorization failed!', HttpStatus.FORBIDDEN)))
         );
     }
 
@@ -44,14 +44,14 @@ export class AuthService {
         if (!user.createdAt) {
             user.createdAt = new Date();
         }
-        const save$ = from(this.userRepository.save(user)).pipe(
+        const save$ = defer(() => from(this.userRepository.save(user)).pipe(
             map(user => {
                 delete user.password;
                 return user;
             })
-        );
+        ));
         const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
-        return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : defer(() => save$))));
+        return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
     }
 
     public signJWT(username: string, userId: string) {
@@ -64,13 +64,16 @@ export class AuthService {
         //   "iss": "Micro-Service-Name",
         //   "sub": "from-application"
         // }
-        return this.jwtService.sign({ username, userId }, { algorithm: 'HS256', expiresIn: '1d' });
+        return this.jwtService.sign({ username, userId }, { algorithm: 'HS256', expiresIn: '24h' });
     }
     public decodeJWT(token: string) {
         return this.jwtService.decode(token);
     }
 
     public refreshToken(token: string) {
+        if (isNil(this.decodeJWT(token))) {
+         throw new BadRequestException('Token format error, check and confirm your token is full again!');
+        }
         const { username, userId } = this.decodeJWT(token) as { username: string; userId: string };
         try {
             this.jwtService.verify(token);
