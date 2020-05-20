@@ -2,9 +2,9 @@ import { IsString } from 'class-validator';
 
 export class LogDTO {
     @IsString()
-    operatorId: string;
-    request?: any;
-    response?: any;
+    operatorId = '';
+    request? = {};
+    response? = {};
     @IsString()
-    content: string;
+    content = '';
 }

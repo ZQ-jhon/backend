@@ -12,7 +12,7 @@ export class Log {
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date = new Date();
 
-    @Column({ name: 'operator_id' })
+    @Column({ name: 'operator_id', default: '' })
     operatorId: string;
 
     @Column('simple-json')
@@ -20,6 +20,6 @@ export class Log {
 
     @Column('simple-json')
     response: CustomResponse = {};
-    @Column()
+    @Column({ default: '' })
     content: string;
 }

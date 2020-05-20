@@ -34,7 +34,7 @@ import { CustomResponse } from '../interfaces/custom-response.interface';
 @Catch()
 export class HttpExceptionFilter<T> implements ExceptionFilter {
     constructor(private readonly logService: LogService) { }
-    catch(exception: HttpException, host: ArgumentsHost) {
+    async catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
@@ -67,7 +67,7 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
                 } as CustomResponse,
             } as LogDTO;
         }
-
-        this.logService.save(dto).subscribe(() => response.status(status).json(err));
+        await this.logService.save(dto);
+        response.status(status).json(err);
     }
 }
