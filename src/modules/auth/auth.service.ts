@@ -27,7 +27,7 @@ export class AuthService {
             .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
         return from(promise).pipe(
-            switchMap(u => !!u ? of(u) : throwError(new HttpException('Authorization failed!', HttpStatus.FORBIDDEN)))
+            switchMap(u => (!!u ? of(u) : throwError(new HttpException('Authorization failed!', HttpStatus.FORBIDDEN))))
         );
     }
 
@@ -44,12 +44,14 @@ export class AuthService {
         if (!user.createdAt) {
             user.createdAt = new Date();
         }
-        const save$ = defer(() => from(this.userRepository.save(user)).pipe(
-            map(user => {
-                delete user.password;
-                return user;
-            })
-        ));
+        const save$ = defer(() =>
+            from(this.userRepository.save(user)).pipe(
+                map(user => {
+                    delete user.password;
+                    return user;
+                })
+            )
+        );
         const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
         return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
     }
@@ -72,7 +74,7 @@ export class AuthService {
 
     public refreshToken(token: string) {
         if (isNil(this.decodeJWT(token))) {
-         throw new BadRequestException('Token format error, check and confirm your token is full again!');
+            throw new BadRequestException('Token format error, check and confirm your token is full again!');
         }
         const { username, userId } = this.decodeJWT(token) as { username: string; userId: string };
         try {

@@ -23,7 +23,7 @@ describe('CommentController', () => {
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
-    }
+    };
     beforeEach(async () => {
         const commentsCache = [] as Comment[];
         const app: TestingModule = await Test.createTestingModule({
@@ -48,9 +48,9 @@ describe('CommentController', () => {
                 },
             ],
         })
-        .overrideGuard(AuthGuard)
-        .useValue(authGuard)
-        .compile();
+            .overrideGuard(AuthGuard)
+            .useValue(authGuard)
+            .compile();
         commentController = app.get<CommentController>(CommentController);
     });
 

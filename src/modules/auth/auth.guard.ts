@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 export class AuthGuard implements CanActivate {
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+        private readonly userRepository: Repository<User>
     ) {}
     async canActivate(context: ExecutionContext) {
         try {

@@ -13,7 +13,7 @@ export class LogService {
     constructor(
         @InjectRepository(Log)
         private readonly logRepository: Repository<Log>
-    ) { }
+    ) {}
 
     public save(dto: LogDTO) {
         if (!dto) {
@@ -32,7 +32,7 @@ export class LogService {
             }),
             catchError(err => {
                 return throwError(new BadRequestException(err.message));
-            }),
+            })
         );
     }
 }

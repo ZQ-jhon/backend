@@ -14,19 +14,18 @@ describe('Auth Controller', () => {
             return user;
         },
         signJWT: () => '',
-        decodeJWT: () => { },
+        decodeJWT: () => {},
         refreshToken: () => '',
-
-    }
+    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [AuthController],
             providers: [AuthService],
         })
-        .overrideProvider(AuthService)
-        .useValue(service)
-        .compile();
+            .overrideProvider(AuthService)
+            .useValue(service)
+            .compile();
 
         controller = module.get<AuthController>(AuthController);
     });

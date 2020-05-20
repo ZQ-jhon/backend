@@ -13,6 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             entities: ['dist/**/**.entity{.ts,.js}'], // sb webpack
             synchronize: true,
         }),
-    ]
+    ],
 })
 export class DatabaseModule {}

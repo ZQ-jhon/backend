@@ -10,13 +10,7 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { DatabaseModule } from './modules/database/database.module';
 
 @Module({
-    imports: [
-        LogModule,
-        AuthModule,
-        UserModule,
-        CommentModule,
-        DatabaseModule,
-    ],
+    imports: [LogModule, AuthModule, UserModule, CommentModule, DatabaseModule],
     controllers: [AppController],
     providers: [
         AppService,

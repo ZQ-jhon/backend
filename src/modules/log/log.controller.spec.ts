@@ -12,9 +12,9 @@ describe('Log Controller', () => {
             controllers: [LogController],
             providers: [LogService],
         })
-        .overrideProvider(LogService)
-        .useValue(service)
-        .compile();
+            .overrideProvider(LogService)
+            .useValue(service)
+            .compile();
 
         controller = module.get<LogController>(LogController);
     });

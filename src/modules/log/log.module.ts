@@ -14,8 +14,6 @@ import { User } from '../user/user.entity';
 })
 export class LogModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(logger)
-            .forRoutes(LogController);
+        consumer.apply(logger).forRoutes(LogController);
     }
 }

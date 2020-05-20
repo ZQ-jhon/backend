@@ -5,4 +5,3 @@ describe('HttpExceptionFilter', () => {
         expect(HttpExceptionFilter).toBeDefined();
     });
 });
-    
