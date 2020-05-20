@@ -5,6 +5,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Success } from '../../interfaces/success.interface';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import { PickInQuery } from '../../decorators/pick-in-query.decorator';
 
 @Controller('user')
 @UseGuards(AuthGuard)
@@ -16,11 +17,11 @@ export class UserController {
      */
     @Get()
     @ApiBearerAuth()
-    public async getUserByQuery(@Query() query: { offset: number; limit: number }) {
-        if (isNullOrUndefined(query.offset) || isNullOrUndefined(query.limit)) {
+    public async getUserByQuery(@Query('offset') offset: number, @PickInQuery('limit') limit: number) {
+        if (isNullOrUndefined(offset) || isNullOrUndefined(limit)) {
             throw new HttpException(`Need more query or parameter`, HttpStatus.BAD_REQUEST);
         }
-        const _users = await this.userService.findByOffsetAndLimit(query.offset, query.limit).toPromise();
+        const _users = await this.userService.findByOffsetAndLimit(offset, limit).toPromise();
         return { success: true, value: _users };
     }
 

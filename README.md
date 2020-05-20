@@ -38,11 +38,11 @@ Base:
 
 Optimization & Advanced:
 
-- [ ] Custom middleware and decorator. 
+- [x] Custom middleware and decorator. 
 - [x] ~~Exception Filter~~
 - [x] ~~Pipe~~
 - [x] ~~Guard~~
-~~Interceptor~~
+~~Interceptor~~(No scene to use)
 - [ ] caching by Redis
 
 ## Test Coverage in unit-test
