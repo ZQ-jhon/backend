@@ -1,14 +1,16 @@
-import { Controller, Get, HttpException, HttpStatus, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Param, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { isNullOrUndefined } from 'util';
 import { AuthGuard } from '../auth/auth.guard';
-import { Success } from '../../interfaces/success.interface';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { PickInQuery } from '../../decorators/pick-in-query.decorator';
+import { ResponseInterceptor } from '../../interceptors/response.interceptor';
 
 @Controller('user')
 @UseGuards(AuthGuard)
+@UseInterceptors(ResponseInterceptor)
+
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -21,14 +23,12 @@ export class UserController {
         if (isNullOrUndefined(offset) || isNullOrUndefined(limit)) {
             throw new HttpException(`Need more query or parameter`, HttpStatus.BAD_REQUEST);
         }
-        const _users = await this.userService.findByOffsetAndLimit(offset, limit).toPromise();
-        return { success: true, value: _users };
+        return await this.userService.findByOffsetAndLimit(offset, limit).toPromise();
     }
 
     @Get('/:userIdOrName')
     public async getUserByUserId(@Param('userIdOrName') userIdOrName: string) {
-        const user = await this.userService.findOne(userIdOrName).toPromise();
-        return { success: true, value: user };
+        return await this.userService.findOne(userIdOrName).toPromise();
     }
 
     @Get(':userId/comment')
@@ -39,6 +39,6 @@ export class UserController {
         @Query('limit') limit: number
     ) {
         const _user = await this.userService.getUserWithLatestComment(userId, offset, limit).toPromise();
-        return { success: true, value: _user } as Success<Partial<User>>;
+        return _user as Partial<User>;
     }
 }

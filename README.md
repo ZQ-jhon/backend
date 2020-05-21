@@ -42,7 +42,7 @@ Optimization & Advanced:
 - [x] ~~Exception Filter~~
 - [x] ~~Pipe~~
 - [x] ~~Guard~~
-~~Interceptor~~(No scene to use)
+- [x] ~~Interceptor~~
 - [ ] caching by Redis
 
 ## Test Coverage in unit-test
@@ -82,3 +82,6 @@ resolution: commit #6e7608
 
 - Auto build and restart nginx service
 resolution: execute shell/script with git hooks and husky 
+
+- How to unified response interface
+resolution: using interceptor for make response interface unified

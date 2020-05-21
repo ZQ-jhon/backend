@@ -1,11 +1,13 @@
-import { Body, Controller, Get, HttpCode, Param, Post, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
-import { Success } from '../../interfaces/success.interface';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards, HttpException, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { of } from 'rxjs';
+import { ResponseInterceptor } from '../../interceptors/response.interceptor';
 @Controller('comment')
 @UseGuards(AuthGuard)
+@UseInterceptors(ResponseInterceptor)
+
 export class CommentController {
     constructor(private readonly commentService: CommentService) {}
 
@@ -15,8 +17,7 @@ export class CommentController {
     @Post()
     @HttpCode(201)
     public async setComment(@Body() comment: Comment) {
-        const result = await this.commentService.setComment(comment).toPromise();
-        return { success: true, value: result } as Success<Comment>;
+        return await this.commentService.setComment(comment).toPromise();
     }
 
     /**
@@ -24,10 +25,10 @@ export class CommentController {
      */
     @Get(':id')
     public async getCommentByUserId(@Param('id') id: string) {
-        const result = await this.commentService.getComment(id).toPromise();
+        const result =  await this.commentService.getComment(id).toPromise();
         if (!result) {
             return of(new HttpException(`Not found ${id}`, HttpStatus.NOT_FOUND));
         }
-        return { success: true, value: result } as Success<Comment>;
+        return result;
     }
 }

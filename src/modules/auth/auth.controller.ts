@@ -1,14 +1,15 @@
-import { Controller, Post, Body, HttpStatus, Headers, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, Headers, HttpException, UseInterceptors } from '@nestjs/common';
 import { ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { Success } from '../../interfaces/success.interface';
 import { User } from '../user/user.entity';
 import { AuthService } from './auth.service';
 import { UserDtoPipe } from '../user/user-dto-pipe.pipe';
 import { UserDto } from '../user/user.dto';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs/internal/observable/of';
+import { ResponseInterceptor } from '../../interceptors/response.interceptor';
 
 @Controller('auth')
+@UseInterceptors(ResponseInterceptor)
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
     @Post('login')
@@ -22,13 +23,13 @@ export class AuthController {
         const user = (await this.authService.login(body).toPromise()) as User;
         if (!!user) {
             const token = this.authService.signJWT(body.username, user.id);
-            return { success: true, value: token } as Success<Partial<User>>;
+            return token;
         }
     }
     @Post('token')
-    @ApiBearerAuth()
+    @ApiBearerAuth('Bearer')
     public refreshToken(@Headers('authorization') authorization: string) {
-        return { success: true, value: this.authService.refreshToken(authorization.split(' ').pop()) };
+        return this.authService.refreshToken(authorization.split(' ').pop());
     }
 
     /**
@@ -38,6 +39,6 @@ export class AuthController {
     @ApiCreatedResponse()
     public async create(@Body(new UserDtoPipe()) user: UserDto) {
         const _user = await this.authService.createUser(plainToClass(User, user)).toPromise();
-        return { success: true, value: _user } as Success<Partial<User>>;
+        return _user;
     }
 }
