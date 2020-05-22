@@ -13,15 +13,15 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
     @Post('login')
     @ApiCreatedResponse()
-    public async login(@Body() body: { username: string; password: string }) {
-        if (!body.username || !body.password) {
+    public async login(@Body('username') username: string, @Body('password') password: string) {
+        if (!username || !password) {
             return await of(
                 new HttpException('More PAYMENT_REQUIRED in login process.', HttpStatus.PAYMENT_REQUIRED)
             ).toPromise();
         }
-        const user = (await this.authService.login(body)) as User;
+        const user = (await this.authService.login(username, password)) as User;
         if (!!user) {
-            const token = this.authService.signJWT(body.username, user.id);
+            const token = this.authService.signJWT(username, user.id);
             return token;
         }
     }

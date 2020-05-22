@@ -1,11 +1,11 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { createHmac } from 'crypto';
 import { isNil } from 'lodash';
 import { defer, from, of, throwError } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 import { UserDto } from '../user/user.dto';
@@ -20,24 +20,21 @@ export class AuthService {
     /**
      * matchOneByPayload
      */
-    public async login(payload: { username: string; password: string }) {
-        const user = await this.findOne(payload.username).toPromise();
+    public async login(username: string, originPWD: string) {
+        const user = await this.findOne(username).toPromise();
         if (isNil(user)) {
-            return throwError(new HttpException(`User ${payload.username} is not exist!`, HttpStatus.FORBIDDEN)).toPromise();
+            return throwError(new HttpException(`User ${username} is not exist!`, HttpStatus.NOT_FOUND)).toPromise();
         }
-        // TODO: MIXIN PASSWORD VERIFY
-        const promise = this.userRepository
-            .createQueryBuilder('user')
-            .where(`user.password = :pwd AND user.username = :username`, {
-                pwd: payload.password,
-                username: payload.username,
-            })
-            .select(['user.username', 'user.id', 'user.createdAt'])
-            .getOne();
-        return from(promise).pipe(
-            tap(u => console.log(u)),
-            switchMap(u => (!!u ? of(u) : throwError(new HttpException('Authorization failed!', HttpStatus.FORBIDDEN))))
-        ).toPromise();
+        const { password, secret, algorithm, id, createdAt } = user;
+        if (password === this.encodeMixinPassword(algorithm, originPWD, secret)) {
+            return ({
+                username,
+                id,
+                createdAt,
+            }) as Pick<User, 'id' | 'username' | 'createdAt'>;
+        } else {
+            return throwError(new UnauthorizedException(`User ${username} password is not right!`)).toPromise();
+        }
     }
 
     public findOne(username: string) {
@@ -57,11 +54,11 @@ export class AuthService {
                 map(user => {
                     delete user.password;
                     return user as Omit<User, 'password'>;
-                })
+                }),
             )
         );
         const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
-        return this.findOne(user.username).pipe(switchMap(user => (isNil(user) ? error$ : save$)));
+        return this.findOne(user.username).pipe(switchMap(user => !isNil(user) ? error$ : save$));
     }
 
     public signJWT(username: string, userId: string) {
@@ -98,12 +95,14 @@ export class AuthService {
         if (!user.password) { return; }
         const algorithm = 'sha256';
         const secret = v4();
-        const mixinPassword = createHmac(algorithm, secret)
-            .update(user.password + secret)
-            .digest('base64');
+        const mixinPassword = this.encodeMixinPassword(algorithm, user.password, secret);
         user.algorithm = algorithm;
         user.password = mixinPassword;
         user.secret = secret;
         return user;
+    }
+
+    private encodeMixinPassword(algorithm: string, password: string, secret: string) {
+        return createHmac(algorithm, secret).update(password + secret).digest('base64');
     }
 }
