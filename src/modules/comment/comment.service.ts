@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { throwError, of, from } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -13,7 +13,7 @@ export class CommentService {
     ) {}
     public setComment(comment: Comment) {
         return from(this.commentRepository.save(comment)).pipe(
-            catchError(err => of(new HttpException(`保存评论出错: ${err?.message}`, HttpStatus.SERVICE_UNAVAILABLE)))
+            catchError(err => throwError(new InternalServerErrorException(`保存评论出错: ${err?.message}`)))
         );
     }
     public getComment(commentId: string) {
