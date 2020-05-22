@@ -16,9 +16,14 @@ loginAction.addEventListener('click', function (e) {
         url: `${baseUrl}/auth/login`,
         body: user,
         success: function (e) {
-            localStorage.setItem('token', `Bearer ` + JSON.parse(e).value);
-            console.log(JSON.parse(e));
-            loginResult.innerHTML += `用户 ${loginUsername.value} 登录成功, token 已存入 localstorage, 详情请见控制台<br/>`;
+            const token = JSON.parse(e).value;
+            if (!!token) {
+                localStorage.setItem('token', `Bearer ` + JSON.parse(e).value);
+                console.log(JSON.parse(e));
+                loginResult.innerHTML += `用户 ${loginUsername.value} 登录成功, token 已存入 localStorage, 详情请见控制台<br/>`;
+            } else {
+                loginResult.innerHTML += `<b class="warning">${JSON.parse(e).message}<br/>`;
+            }
         },
         error: function (err) {
             loginResult.innerHTML += `<b class="warning">${err.message}<br/>`;
@@ -42,9 +47,13 @@ createUser.addEventListener('click', function () {
         url: `${baseUrl}/auth/user`,
         body: user,
         success: function (e) {
-            const { username, password, id } = JSON.parse(e).value;
-            console.log(username, password, id);
-            createUserResult.innerHTML += `用户 ${username} 创建成功<br/>`;
+            const { username, id } = JSON.parse(e).value;
+            console.log(username, id);
+            if (!!username && !!id) {
+                createUserResult.innerHTML += `用户 ${username} 创建成功<br/>`;
+            } else {
+                createUserResult.innerHTML += `<b class="warning">${JSON.parse(e).value.message}<br/>`;
+            }
         },
         error: function (err) {
             createUserResult.innerHTML += `<b class="warning">${JSON.parse(err).message}<br/>`;
@@ -69,7 +78,11 @@ createUsers.addEventListener('click', function () {
             body: user,
             success: function (e) {
                 const { username } = JSON.parse(e).value;
-                createUsersResult.innerHTML += `用户 ${username} 创建成功<br/>`;
+                if (!!username) {
+                    createUsersResult.innerHTML += `用户 ${username} 创建成功<br/>`;
+                } else {
+                    createUsersResult.innerHTML += `<b class="warning">${JSON.parse(e).value.message}<br/>`;
+                }
             },
             error: function (err) {
                 createUsersResult.innerHTML += `<b class="warning">${JSON.parse(err).message}<br/>`
