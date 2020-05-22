@@ -1,4 +1,15 @@
-import { Body, Controller, Get, HttpCode, Param, Post, UseGuards, HttpException, HttpStatus, UseInterceptors } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    Param,
+    Post,
+    UseGuards,
+    HttpException,
+    HttpStatus,
+    UseInterceptors,
+} from '@nestjs/common';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -10,9 +21,8 @@ import { v4 } from 'uuid';
 @Controller('comment')
 @UseGuards(AuthGuard)
 @UseInterceptors(ResponseInterceptor)
-
 export class CommentController {
-    constructor(private readonly commentService: CommentService) { }
+    constructor(private readonly commentService: CommentService) {}
 
     /**
      * 构建一条 comment

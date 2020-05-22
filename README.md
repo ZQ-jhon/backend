@@ -38,11 +38,11 @@ Base:
 
 Optimization & Advanced:
 
-- [x] Custom middleware and decorator. 
-- [x] ~~Exception Filter~~
-- [x] ~~Pipe~~
-- [x] ~~Guard~~
-- [x] ~~Interceptor~~
+- [x] ~~Custom middleware and decorator.(Catching every request/response as handler)~~ 
+- [x] ~~Exception Filter(Catching exception)~~
+- [x] ~~Pipe (DTO => Entity)~~
+- [x] ~~Guard (Token Valid)~~
+- [x] ~~Interceptor (Unified Response Interface)~~
 - [ ] caching by Redis
 
 ## Test Coverage in unit-test

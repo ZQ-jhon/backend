@@ -21,7 +21,7 @@ export class User {
     // 声明子类映射，及在子类中对应的 field
     @OneToMany(
         type => Comment,
-        comment => comment.userId,
+        comment => comment.userId
     )
     comment: Comment[];
 }

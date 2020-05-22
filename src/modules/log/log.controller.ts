@@ -9,15 +9,15 @@ import { ResponseInterceptor } from '../../interceptors/response.interceptor';
 @UseGuards(AuthGuard)
 @UseInterceptors(ResponseInterceptor)
 export class LogController {
-    constructor(private readonly logService: LogService) { }
+    constructor(private readonly logService: LogService) {}
 
     @Post()
     public async save(@Body() logDTO: LogDTO) {
-        return await this.logService.save(logDTO).toPromise() as Log;
+        return (await this.logService.save(logDTO).toPromise()) as Log;
     }
 
     @Get('/:logId')
     public async find(@Param('logId') logId: string) {
-        return await this.logService.findOne(logId).toPromise() as Log;
+        return (await this.logService.findOne(logId).toPromise()) as Log;
     }
 }

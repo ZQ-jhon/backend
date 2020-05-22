@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { throwError, of, from } from 'rxjs';
+import { from, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';

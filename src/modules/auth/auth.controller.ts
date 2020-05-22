@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 @Controller('auth')
 @UseInterceptors(ResponseInterceptor)
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService) {}
     @Post('login')
     @ApiCreatedResponse()
     public async login(@Body('username') username: string, @Body('password') password: string) {

@@ -10,7 +10,6 @@ import { ResponseInterceptor } from '../../interceptors/response.interceptor';
 @Controller('user')
 @UseGuards(AuthGuard)
 @UseInterceptors(ResponseInterceptor)
-
 export class UserController {
     constructor(private readonly userService: UserService) {}
 

@@ -16,7 +16,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
-    ) { }
+    ) {}
     /**
      * matchOneByPayload
      */
@@ -27,11 +27,11 @@ export class AuthService {
         }
         const { password, secret, algorithm, id, createdAt } = user;
         if (password === this.encodeMixinPassword(algorithm, originPWD, secret)) {
-            return ({
+            return {
                 username,
                 id,
                 createdAt,
-            }) as Pick<User, 'id' | 'username' | 'createdAt'>;
+            } as Pick<User, 'id' | 'username' | 'createdAt'>;
         } else {
             return throwError(new UnauthorizedException(`User ${username} password is not right!`)).toPromise();
         }
@@ -54,11 +54,11 @@ export class AuthService {
                 map(user => {
                     delete user.password;
                     return user as Omit<User, 'password'>;
-                }),
+                })
             )
         );
         const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
-        return this.findOne(user.username).pipe(switchMap(user => !isNil(user) ? error$ : save$));
+        return this.findOne(user.username).pipe(switchMap(user => (!isNil(user) ? error$ : save$)));
     }
 
     public signJWT(username: string, userId: string) {
@@ -90,9 +90,10 @@ export class AuthService {
         }
     }
 
-
     private crypto(user: User) {
-        if (!user.password) { return; }
+        if (!user.password) {
+            return;
+        }
         const algorithm = 'sha256';
         const secret = v4();
         const mixinPassword = this.encodeMixinPassword(algorithm, user.password, secret);
@@ -103,6 +104,8 @@ export class AuthService {
     }
 
     private encodeMixinPassword(algorithm: string, password: string, secret: string) {
-        return createHmac(algorithm, secret).update(password + secret).digest('base64');
+        return createHmac(algorithm, secret)
+            .update(password + secret)
+            .digest('base64');
     }
 }
