@@ -1,15 +1,15 @@
-import { Injectable, HttpStatus, HttpException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-import { User } from '../user/user.entity';
-import { switchMap, map } from 'rxjs/operators';
-import { of, defer, from, throwError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isNil } from 'lodash';
-import { UserDto } from '../user/user.dto';
 import { plainToClass } from 'class-transformer';
 import { createHmac } from 'crypto';
+import { isNil } from 'lodash';
+import { defer, from, of, throwError } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
+import { UserDto } from '../user/user.dto';
+import { User } from '../user/user.entity';
 @Injectable()
 export class AuthService {
     constructor(
@@ -20,7 +20,12 @@ export class AuthService {
     /**
      * matchOneByPayload
      */
-    public login(payload: { username: string; password: string }) {
+    public async login(payload: { username: string; password: string }) {
+        const user = await this.findOne(payload.username).toPromise();
+        if (isNil(user)) {
+            return throwError(new HttpException(`User ${payload.username} is not exist!`, HttpStatus.FORBIDDEN)).toPromise();
+        }
+        // TODO: MIXIN PASSWORD VERIFY
         const promise = this.userRepository
             .createQueryBuilder('user')
             .where(`user.password = :pwd AND user.username = :username`, {
@@ -30,25 +35,23 @@ export class AuthService {
             .select(['user.username', 'user.id', 'user.createdAt'])
             .getOne();
         return from(promise).pipe(
+            tap(u => console.log(u)),
             switchMap(u => (!!u ? of(u) : throwError(new HttpException('Authorization failed!', HttpStatus.FORBIDDEN))))
-        );
+        ).toPromise();
     }
 
-    public isUserExist(user: User) {
+    public findOne(username: string) {
         return from(
             this.userRepository
                 .createQueryBuilder('user')
-                .where('user.username = :id OR user.username = :name', { id: user.id, name: user.username })
+                .where('user.username = :name', { name: username })
                 .getOne()
-        ).pipe(map(user => !isNil(user)));
+        );
     }
 
     public createUser(userDTO: UserDto) {
         const user = plainToClass(User, userDTO);
-        const { algorithm, mixinPassword, secret } = this.crypto(user.password);
-        user.algorithm = algorithm;
-        user.password = mixinPassword;
-        user.secret = secret;
+        this.crypto(user);
         const save$ = defer(() =>
             from(this.userRepository.save(user)).pipe(
                 map(user => {
@@ -58,7 +61,7 @@ export class AuthService {
             )
         );
         const error$ = of(new HttpException('用户已存在', HttpStatus.BAD_REQUEST));
-        return this.isUserExist(user).pipe(switchMap(exist => (exist ? error$ : save$)));
+        return this.findOne(user.username).pipe(switchMap(user => (isNil(user) ? error$ : save$)));
     }
 
     public signJWT(username: string, userId: string) {
@@ -91,14 +94,16 @@ export class AuthService {
     }
 
 
-    private crypto(password: string, secret = v4(), ) {
-        if (!password) { return; }
+    private crypto(user: User) {
+        if (!user.password) { return; }
         const algorithm = 'sha256';
+        const secret = v4();
         const mixinPassword = createHmac(algorithm, secret)
-            .update(password + secret)
+            .update(user.password + secret)
             .digest('base64');
-
-        return { algorithm, mixinPassword, secret };
-
+        user.algorithm = algorithm;
+        user.password = mixinPassword;
+        user.secret = secret;
+        return user;
     }
 }

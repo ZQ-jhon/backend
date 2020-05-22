@@ -1,17 +1,16 @@
-import { Controller, Post, Body, HttpStatus, Headers, HttpException, UseInterceptors } from '@nestjs/common';
-import { ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { User } from '../user/user.entity';
-import { AuthService } from './auth.service';
-import { UserDtoPipe } from '../user/user-dto-pipe.pipe';
-import { UserDto } from '../user/user.dto';
-import { plainToClass } from 'class-transformer';
+import { Body, Controller, Headers, HttpException, HttpStatus, Post, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { of } from 'rxjs/internal/observable/of';
 import { ResponseInterceptor } from '../../interceptors/response.interceptor';
+import { UserDtoPipe } from '../user/user-dto-pipe.pipe';
+import { UserDto } from '../user/user.dto';
+import { User } from '../user/user.entity';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 @UseInterceptors(ResponseInterceptor)
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) { }
     @Post('login')
     @ApiCreatedResponse()
     public async login(@Body() body: { username: string; password: string }) {
@@ -20,7 +19,7 @@ export class AuthController {
                 new HttpException('More PAYMENT_REQUIRED in login process.', HttpStatus.PAYMENT_REQUIRED)
             ).toPromise();
         }
-        const user = (await this.authService.login(body).toPromise()) as User;
+        const user = (await this.authService.login(body)) as User;
         if (!!user) {
             const token = this.authService.signJWT(body.username, user.id);
             return token;
