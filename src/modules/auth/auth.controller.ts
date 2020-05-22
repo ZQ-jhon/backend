@@ -37,8 +37,8 @@ export class AuthController {
      */
     @Post('user')
     @ApiCreatedResponse()
-    public async create(@Body(new UserDtoPipe()) user: UserDto) {
-        const _user = await this.authService.createUser(plainToClass(User, user)).toPromise();
-        return _user;
+    public async create(@Body(new UserDtoPipe()) userDTO: UserDto) {
+        const user = await this.authService.createUser(userDTO).toPromise();
+        return user;
     }
 }

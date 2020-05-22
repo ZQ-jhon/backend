@@ -6,14 +6,17 @@ import { switchMap, map } from 'rxjs/operators';
 import { of, defer, from, throwError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
-
+import { UserDto } from '../user/user.dto';
+import { plainToClass } from 'class-transformer';
+import { createHmac } from 'crypto';
+import { v4 } from 'uuid';
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
-    ) {}
+    ) { }
     /**
      * matchOneByPayload
      */
@@ -40,15 +43,17 @@ export class AuthService {
         ).pipe(map(user => !isNil(user)));
     }
 
-    public createUser(user: User) {
-        if (!user.createdAt) {
-            user.createdAt = new Date();
-        }
+    public createUser(userDTO: UserDto) {
+        const user = plainToClass(User, userDTO);
+        const { algorithm, mixinPassword, secret } = this.crypto(user.password);
+        user.algorithm = algorithm;
+        user.password = mixinPassword;
+        user.secret = secret;
         const save$ = defer(() =>
             from(this.userRepository.save(user)).pipe(
                 map(user => {
                     delete user.password;
-                    return user;
+                    return user as Omit<User, 'password'>;
                 })
             )
         );
@@ -83,5 +88,17 @@ export class AuthService {
         } catch (err) {
             return this.signJWT(username, userId);
         }
+    }
+
+
+    private crypto(password: string, secret = v4(), ) {
+        if (!password) { return; }
+        const algorithm = 'sha256';
+        const mixinPassword = createHmac(algorithm, secret)
+            .update(password + secret)
+            .digest('base64');
+
+        return { algorithm, mixinPassword, secret };
+
     }
 }
