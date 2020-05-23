@@ -8,9 +8,10 @@ import { LogModule } from './modules/log/log.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { DatabaseModule } from './modules/database/database.module';
+import { RedisClientModule } from './modules/redis-client/redis-client.module';
 
 @Module({
-    imports: [LogModule, AuthModule, UserModule, CommentModule, DatabaseModule],
+    imports: [LogModule, AuthModule, UserModule, CommentModule, DatabaseModule, RedisClientModule],
     controllers: [AppController],
     providers: [
         AppService,
@@ -19,6 +20,6 @@ import { DatabaseModule } from './modules/database/database.module';
             useClass: HttpExceptionFilter,
         },
     ],
-    exports: [AuthModule],
+    exports: [AuthModule, RedisClientModule],
 })
 export class AppModule {}

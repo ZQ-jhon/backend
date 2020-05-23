@@ -1,0 +1,1 @@
+export const REDIS_INJECT_TOKEN = 'redis';
