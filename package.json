@@ -19,6 +19,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage && npx http-server ./coverage/lcov-report -o",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:connect:redis": "npx ts-node src/redis/redis.ts",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
@@ -47,6 +48,7 @@
     "@types/express": "^4.17.3",
     "@types/jest": "25.1.4",
     "@types/node": "^13.9.1",
+    "@types/redis": "^2.8.21",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
