@@ -23,4 +23,12 @@ export class AppService {
             },
         };
     }
+    public sendJSONPData(callbackName: string) {
+        return `${callbackName}(${JSON.stringify({
+            data: 'hello',
+            timestamp: new Date().toUTCString(),
+            status: 200,
+            requestBy: 'JSONP',
+        })})`;
+    }
 }

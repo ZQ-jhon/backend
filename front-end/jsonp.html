@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSONP test</title>
+</head>
+
+<body>
+
+    <script>
+        const callbackName = 'handler';
+        window[`${callbackName}`] = function (data) {
+            document.body.innerHTML = `<pre>${JSON.stringify(data, 2)}</pre>`;
+        };
+    </script>
+    <script async>
+        const baseUrl = `http://${location.hostname}:3000`;
+        const script = document.createElement('script');
+        const requestUrl = `${baseUrl}/jsonp?callback_name=${callbackName}`;
+        script.setAttribute('src', requestUrl);
+        document.body.appendChild(script);
+    </script>
+
+</body>
+
+</html>
