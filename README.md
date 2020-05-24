@@ -43,7 +43,7 @@ Optimization & Advanced:
 - [x] ~~Pipe (DTO => Entity)~~
 - [x] ~~Guard (Token Valid)~~
 - [x] ~~Interceptor (Unified Response Interface)~~
-- [ ] caching by Redis
+- [ ] caching by Redis(JWT token cached to REDIS)
 
 ## Test Coverage in unit-test
 | File                        | % Stmts   | % Branch   | % Funcs   | % Lines   | Uncovered Line #s   |
