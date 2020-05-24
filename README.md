@@ -77,7 +77,7 @@ Optimization & Advanced:
 | --------------------------- | --------- | ---------- | --------- | --------- | ------------------- |
 
 ## Questions in development
-- OOM killer in linux 
+- OOM(out of memory) killer in linux 
 resolution: commit #6e7608
 
 - Auto build and restart nginx service
