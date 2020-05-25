@@ -2,8 +2,9 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/co
 import { Request, Response } from 'express';
 import { LogService } from '../modules/log/log.service';
 import { LogDTO } from '../modules/log/log.dto';
-import { verifyAuthHeader } from '../util/verify-auth-headers';
 import { CustomResponse } from '../interfaces/custom-response.interface';
+import { RedisCacheService } from '../modules/redis-cache/redis-cache.service';
+import { verifyAuthHeader } from '../util/verify-auth-headers';
 
 /**
  *
@@ -33,7 +34,10 @@ import { CustomResponse } from '../interfaces/custom-response.interface';
  */
 @Catch()
 export class HttpExceptionFilter<T> implements ExceptionFilter {
-    constructor(private readonly logService: LogService) {}
+    constructor(
+        private readonly logService: LogService,
+        private readonly redisCacheService: RedisCacheService,
+    ) { }
     async catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
@@ -45,28 +49,24 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
             path: request.url,
             message: exception.message,
         };
-        let operatorId, dto;
-        try {
-            operatorId = verifyAuthHeader(request.headers?.authorization);
-        } catch (err) {
-            dto = {
-                content: err.message,
-                operatorId: operatorId,
-                request: {
-                    path: request.path,
-                    method: request.method,
-                    userAgent: request.headers['user-agent'],
-                    body: request.body,
-                    query: request.query,
-                    params: request.params,
-                    contentType: request.headers['content-type'],
-                } as Partial<Request>,
-                response: {
-                    status: response.statusCode,
-                    message: response.statusMessage,
-                } as CustomResponse,
-            } as LogDTO;
-        }
+        const operatorId = verifyAuthHeader(request.headers?.authorization);
+        const dto = {
+            content: err.message,
+            operatorId,
+            request: {
+                path: request.path,
+                method: request.method,
+                userAgent: request.headers['user-agent'],
+                body: request.body,
+                query: request.query,
+                params: request.params,
+                contentType: request.headers['content-type'],
+            } as Partial<Request>,
+            response: {
+                status: response.statusCode,
+                message: response.statusMessage,
+            } as CustomResponse,
+        } as LogDTO;
         await this.logService.save(dto);
         response.status(status).json(err);
     }
