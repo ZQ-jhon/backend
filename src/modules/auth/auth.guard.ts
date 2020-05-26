@@ -1,20 +1,24 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { isNil } from 'lodash';
-import { verifyAuthHeader } from '../../util/verify-auth-headers';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Repository } from 'typeorm';
+import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>
+        private readonly userRepository: Repository<User>,
+        private readonly redisCacheService: RedisCacheService,
     ) {}
     async canActivate(context: ExecutionContext) {
         try {
             const authorization = context.switchToHttp().getRequest().headers?.authorization as string;
-            const id = verifyAuthHeader(authorization);
+            const id = await this.redisCacheService.get(authorization.split(' ').pop()).toPromise();
+            if (isNil(id)) {
+                throw new Error('Detected token is not exist in redis, maybe expire. try again with new!');
+            }
             if (isNil(id)) {
                 throw new Error('Id is invalid, check token and request again!');
             }

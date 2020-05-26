@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Log } from './log.entity';
 import { logger } from '../../middleware/logger.middleware';
 import { User } from '../user/user.entity';
+import { RedisCacheModule } from '../redis-cache/redis-cache.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Log, User])],
+    imports: [TypeOrmModule.forFeature([Log, User]), RedisCacheModule],
     providers: [LogService],
     controllers: [LogController],
     exports: [LogService, TypeOrmModule.forFeature([Log])],

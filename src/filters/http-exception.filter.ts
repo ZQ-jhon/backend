@@ -1,10 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { LogService } from '../modules/log/log.service';
-import { LogDTO } from '../modules/log/log.dto';
 import { CustomResponse } from '../interfaces/custom-response.interface';
-import { RedisCacheService } from '../modules/redis-cache/redis-cache.service';
-import { verifyAuthHeader } from '../util/verify-auth-headers';
+import { LogDTO } from '../modules/log/log.dto';
+import { LogService } from '../modules/log/log.service';
 
 /**
  *
@@ -36,7 +34,6 @@ import { verifyAuthHeader } from '../util/verify-auth-headers';
 export class HttpExceptionFilter<T> implements ExceptionFilter {
     constructor(
         private readonly logService: LogService,
-        private readonly redisCacheService: RedisCacheService,
     ) { }
     async catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
@@ -49,18 +46,18 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
             path: request.url,
             message: exception.message,
         };
-        const operatorId = verifyAuthHeader(request.headers?.authorization);
+        const token = request.headers?.authorization;
         const dto = {
             content: err.message,
-            operatorId,
+            operatorId: token,
             request: {
                 path: request.path,
                 method: request.method,
-                userAgent: request.headers['user-agent'],
+                userAgent: request.get('user-agent'),
                 body: request.body,
                 query: request.query,
                 params: request.params,
-                contentType: request.headers['content-type'],
+                contentType: request.get('content-type'),
             } as Partial<Request>,
             response: {
                 status: response.statusCode,
