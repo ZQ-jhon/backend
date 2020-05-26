@@ -21,14 +21,14 @@ export class AuthController {
         }
         const user = (await this.authService.login(username, password)) as User;
         if (!!user) {
-            const token = this.authService.signJWT(username, user.id);
+            const token = await this.authService.signJWT(username, user.id);
             return token;
         }
     }
     @Post('token')
     @ApiBearerAuth('Bearer')
-    public refreshToken(@Headers('authorization') authorization: string) {
-        return this.authService.refreshToken(authorization.split(' ').pop());
+    public async refreshToken(@Headers('authorization') authorization: string) {
+        return await this.authService.refreshToken(authorization.split(' ').pop());
     }
 
     /**

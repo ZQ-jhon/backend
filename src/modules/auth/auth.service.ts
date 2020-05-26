@@ -10,12 +10,14 @@ import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.entity';
+import { RedisCacheService } from '../redis-cache/redis-cache.service';
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>
+        private readonly userRepository: Repository<User>,
+        private readonly redisCacheService: RedisCacheService,
     ) {}
     /**
      * matchOneByPayload
@@ -61,7 +63,7 @@ export class AuthService {
         return this.findOne(user.username).pipe(switchMap(user => (!isNil(user) ? error$ : save$)));
     }
 
-    public signJWT(username: string, userId: string) {
+    public async signJWT(username: string, userId: string) {
         // 10 min
         // {
         //   "id": "9ssss",
@@ -71,13 +73,21 @@ export class AuthService {
         //   "iss": "Micro-Service-Name",
         //   "sub": "from-application"
         // }
-        return this.jwtService.sign({ username, userId }, { algorithm: 'HS256', expiresIn: '24h' });
+        const token =  this.jwtService.sign({ username, userId }, { algorithm: 'HS256', expiresIn: '24h' });
+        try {
+            await this.redisCacheService.set(token, userId, 24 * 60 * 60).toPromise();
+            console.log(`Redis GET[${token}]: ${await this.redisCacheService.get(token).toPromise()}`);
+        } catch(err) {
+            console.log(err);
+        }
+        return token;
+
     }
     public decodeJWT(token: string) {
         return this.jwtService.decode(token);
     }
 
-    public refreshToken(token: string) {
+    public async refreshToken(token: string) {
         if (isNil(this.decodeJWT(token))) {
             throw new BadRequestException('Token format error, check and confirm your token is full again!');
         }
@@ -86,7 +96,7 @@ export class AuthService {
             this.jwtService.verify(token);
             return token;
         } catch (err) {
-            return this.signJWT(username, userId);
+            return await this.signJWT(username, userId);
         }
     }
 
