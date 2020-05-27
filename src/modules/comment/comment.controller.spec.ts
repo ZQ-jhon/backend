@@ -63,7 +63,7 @@ describe('CommentController', () => {
         it('Called CommentService after called CommentController', async () => {
             const comment = new Comment('cmt');
             expect(await commentController.setComment(comment)).toBeTruthy();
-            expect(await commentController.getCommentByUserId('cmt')).toEqual({ success: true, value: comment });
+            expect(await commentController.getCommentByUserId('cmt')).toEqual(comment);
             await commentController
                 .getCommentByUserId('unExist userId')
                 .catch(err => expect(err.message).toEqual(`unExist userId is not exist!`));
