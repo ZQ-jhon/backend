@@ -1,4 +1,4 @@
-import { UserDtoPipe } from './user-dto-pipe.pipe';
+import { UserDtoPipe } from './user-dto.pipe';
 
 describe('TokenPipePipe', () => {
     it('should be defined', () => {

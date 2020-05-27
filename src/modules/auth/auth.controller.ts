@@ -2,7 +2,7 @@ import { Body, Controller, Headers, HttpException, HttpStatus, Post, UseIntercep
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { of } from 'rxjs/internal/observable/of';
 import { ResponseInterceptor } from '../../interceptors/response.interceptor';
-import { UserDtoPipe } from '../user/user-dto-pipe.pipe';
+import { UserDtoPipe } from '../user/user-dto.pipe';
 import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.entity';
 import { AuthService } from './auth.service';
