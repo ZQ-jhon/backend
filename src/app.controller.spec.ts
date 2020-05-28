@@ -8,7 +8,12 @@ describe('AppController', () => {
     beforeEach(async () => {
         const app: TestingModule = await Test.createTestingModule({
             controllers: [AppController],
-            providers: [AppService],
+            providers: [
+                {
+                    provide: 'AppService',
+                    useClass: AppService,
+                }
+            ],
         }).compile();
 
         appController = app.get<AppController>(AppController);
@@ -18,13 +23,20 @@ describe('AppController', () => {
     describe('root', () => {
         it('Controller & Service Defined', () => {
             expect(appController).toBeDefined();
-            expect(appController.getAllEndpoint).toBeDefined();
+            const mockFn = jest.fn(appController.getAllEndpoint);
+            expect(mockFn).toBeDefined();
         });
 
         it('Verify endpoint includes KEYS:', () => {
-            const returns = appService.getAllEndpoints();
+            const mockFn = jest.fn(appService.getAllEndpoints);
+            const returns = mockFn();
             expect(returns).toBeTruthy();
             expect(/.*?all.|\r*user.|\r*comment/gm.test(JSON.stringify(returns))).toBeTruthy();
+        });
+        it('Test JSONP request', () => {
+            const callbackName = 'callback';
+            const serviceMockFn = jest.fn(appService.sendJSONPData);
+            expect(serviceMockFn(callbackName)).toContain(callbackName);
         });
     });
 });

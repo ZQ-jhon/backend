@@ -17,5 +17,11 @@ describe('AppService', () => {
             expect(appService.getAllEndpoints).toBeDefined();
             expect(appService).toHaveProperty(['getAllEndpoints']);
         });
+        it('Send JSONP data', () => {
+            const callbackName = 'handle';
+            const mockFn = jest.fn(appService.sendJSONPData);
+            expect(mockFn(callbackName)).toMatch(new RegExp(`^${callbackName}`, 'g'));
+            expect(mockFn).toBeCalledTimes(1);
+        });
     });
 });
