@@ -36,7 +36,7 @@ Base:
 * [x] ~~Using postman in pre-push step.~~
 * [x] ~~Create a front-end forms page for test easily.~~
 * [x] ~~Deploy and running it in Tencent-CVM by PM2.~~
-* [x] ~~JWT Bearer authrozation.~~
+* [x] ~~JWT Bearer authorization.~~
 * [x] ~~Unified response interface.~~
 * [x] ~~Written unit test.~~
 * [ ] Written e2e test.
