@@ -28,15 +28,38 @@ describe('AppController', () => {
         });
 
         it('Verify endpoint includes KEYS:', () => {
-            const mockFn = jest.fn(appService.getAllEndpoints);
-            const returns = mockFn();
-            expect(returns).toBeTruthy();
-            expect(/.*?all.|\r*user.|\r*comment/gm.test(JSON.stringify(returns))).toBeTruthy();
+            jest.spyOn(appService, 'getAllEndpoints').mockImplementation((baseUrl = 'localhost:3000') => ({
+                all: {
+                    '[EndPoint] For all endpoints               ': 'GET ' + baseUrl,
+                },
+                auth: {
+                    '[Auth API] Login                           ': 'POST ' + baseUrl + '/auth/login body: [UserDto]',
+                    '[Auth API] Redeem token                    ': 'POST ' + baseUrl + '/auth/token header [Bearer authorization]',
+                    '[Auth API] Create user                     ': 'POST ' + baseUrl + '/auth/user body [UserDto]',
+                },
+                user: {
+                    '[User API] GET one user                    ': 'GET  ' + baseUrl + '/user/{userIdOrUsername}',
+                    '[User API] GET users                       ': 'GET  ' + baseUrl + '/user?offset={offset}&limit={limit}',
+                },
+                comment: {
+                    '[comment  API] POST one comment            ': 'POST ' + baseUrl + '/comment body: {userId: string, content: string }',
+                    '[comment  API] GET one comment             ': 'GET  ' + baseUrl + '/comment/:id',
+                },
+            }));
+            expect(/^<pre> all.|\r*user.|\r*comment/gm.test(appController.getAllEndpoint())).toBeTruthy();
         });
         it('Test JSONP request', () => {
             const callbackName = 'callback';
-            const serviceMockFn = jest.fn(appService.sendJSONPData);
-            expect(serviceMockFn(callbackName)).toContain(callbackName);
+            jest.spyOn(appService, 'sendJSONPData').mockImplementation((callbackName: string) => {
+                return `${callbackName}(${JSON.stringify({
+                    data: 'hello',
+                    timestamp: new Date().toUTCString(),
+                    status: 200,
+                    requestBy: 'JSONP',
+                })})`;
+            });
+            expect(appController.sendData(callbackName)).toContain(callbackName);
+            expect(appController.sendData(null).startsWith(callbackName)).toBeTruthy();
         });
     });
 });
