@@ -59,7 +59,7 @@ describe('AppController', () => {
                 })})`;
             });
             expect(appController.sendData(callbackName)).toContain(callbackName);
-            expect(appController.sendData(null).startsWith(callbackName)).toBeTruthy();
+            expect(appController.sendData(null).startsWith(callbackName)).toBeFalsy();
         });
     });
 });
