@@ -1,3 +1,8 @@
+# Backend
+
+![](https://img.shields.io/github/issues/ZQ-jhon/backend) ![](https://img.shields.io/github/license/ZQ-jhon/backend) ![](https://img.shields.io/azure-devops/coverage/350037310/350037310/4)
+
+
 ## 重置 mysql 密码
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234'; 
 
@@ -102,3 +107,7 @@ resolution: execute shell/script with git hooks and husky
 * How to unified response interface
 
 resolution: using interceptor for make response interface unified
+
+## Other
+- Unit-test coverage rate powered by AzureDevOps.
+- Deployment & running server by Tencent-CVM.
