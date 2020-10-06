@@ -62,7 +62,7 @@
     "jest": "25.3.0",
     "jsonwebtoken": "8.5.1",
     "prettier": "2.1.2",
-    "supertest": "4.0.2",
+    "supertest": "5.0.0",
     "swagger-ui-express": "4.1.4",
     "ts-jest": "26.4.1",
     "ts-loader": "6.2.2",
