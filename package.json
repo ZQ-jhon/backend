@@ -34,7 +34,7 @@
     "@types/lodash": "4.14.165",
     "class-transformer": "0.3.1",
     "class-validator": "0.12.2",
-    "ioredis": "^4.19.2",
+    "ioredis": "4.19.2",
     "loadsh": "0.0.4",
     "mysql": "2.18.1",
     "nestjs-redis": "1.2.8",
