@@ -37,7 +37,7 @@
     "ioredis": "4.22.0",
     "loadsh": "0.0.4",
     "mysql": "2.18.1",
-    "nestjs-redis": "1.2.8",
+    "nestjs-redis": "1.3.3",
     "redis": "3.0.2",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
