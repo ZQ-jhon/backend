@@ -69,7 +69,7 @@
     "ts-loader": "9.2.2",
     "ts-node": "10.1.0",
     "tsc-watch": "4.4.0",
-    "tsconfig-paths": "3.9.0",
+    "tsconfig-paths": "3.10.1",
     "typescript": "3.9.10"
   },
   "jest": {
