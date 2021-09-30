@@ -24,11 +24,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "8.0.2",
-    "@nestjs/core": "8.0.2",
+    "@nestjs/common": "8.0.9",
+    "@nestjs/core": "8.0.9",
     "@nestjs/jwt": "7.2.0",
-    "@nestjs/microservices": "8.0.2",
-    "@nestjs/platform-express": "8.0.2",
+    "@nestjs/microservices": "8.0.9",
+    "@nestjs/platform-express": "8.0.9",
     "@nestjs/swagger": "4.8.2",
     "@nestjs/typeorm": "7.1.5",
     "@types/lodash": "4.14.170",
@@ -45,9 +45,9 @@
     "typeorm": "0.2.37"
   },
   "devDependencies": {
-    "@nestjs/cli": "8.0.2",
+    "@nestjs/cli": "8.1.2",
     "@nestjs/schematics": "8.0.1",
-    "@nestjs/testing": "8.0.2",
+    "@nestjs/testing": "8.0.9",
     "@types/express": "4.17.13",
     "@types/ioredis": "4.27.5",
     "@types/jest": "26.0.23",
