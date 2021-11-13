@@ -12,9 +12,13 @@ export class AuthGuard implements CanActivate {
         private readonly userRepository: Repository<User>,
         private readonly redisCacheService: RedisCacheService,
     ) {}
+
     async canActivate(context: ExecutionContext) {
         try {
-            const authorization = context.switchToHttp().getRequest().headers?.authorization as string;
+            const authorization = context.switchToHttp().getRequest<{ headers: { authorization: string } }>().headers?.authorization;
+            if (!authorization) {
+                throw new Error('Need authorization field in http headers.')
+            }
             const id = await this.redisCacheService.get(authorization.split(' ').pop()).toPromise();
             if (isNil(id)) {
                 throw new Error('Detected token is not exist in redis, maybe expire. try again with new!');
