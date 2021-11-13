@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+const dep = require('../package.json');
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -8,7 +9,7 @@ async function bootstrap() {
     const options = new DocumentBuilder()
         .setTitle('Typeorm + mysql + Nest.js')
         .setDescription('Just for learn')
-        .setVersion('0.1')
+        .setVersion(dep.version)
         .addTag('ZQ-jhon')
         .build();
     const document = SwaggerModule.createDocument(app, options);

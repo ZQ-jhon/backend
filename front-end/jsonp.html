@@ -8,11 +8,12 @@
 </head>
 
 <body>
-
+    <h1>JSONP test</h1>
+    <div id="slot"></div>
     <script>
         const callbackName = 'handler';
         window[`${callbackName}`] = function (data) {
-            document.body.innerHTML = `<pre>${JSON.stringify(data, 2)}</pre>`;
+            document.body.querySelector('#slot').innerHTML = `<pre>${JSON.stringify(data, 2)}</pre>`;
         };
     </script>
     <script async>
