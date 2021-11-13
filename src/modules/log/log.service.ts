@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-import { isNullOrUndefined } from 'util';
+import { isNil } from 'lodash';
 import { v4 } from 'uuid';
 import { LogDTO } from './log.dto';
 import { Log } from './log.entity';
@@ -25,7 +25,7 @@ export class LogService {
     public findOne(logId: string) {
         return from(this.logRepository.findOne(logId)).pipe(
             map(log => {
-                if (isNullOrUndefined(log)) {
+                if (isNil(log)) {
                     throw new HttpException(new Error(`Can not find log by log_id ${logId}`), HttpStatus.BAD_REQUEST);
                 }
                 return log;

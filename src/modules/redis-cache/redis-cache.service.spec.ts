@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ValueType } from 'ioredis';
-import { Redis } from 'ioredis';
+import { ValueType, Redis } from 'ioredis';
 import { of } from 'rxjs';
 import { RedisCacheService } from './redis-cache.service';
 import { REDIS_INJECT_TOKEN } from '../../constants/redis-inject-token';
@@ -13,8 +12,7 @@ describe('RedisClientService', () => {
         {
           provide: 'RedisService',
           useValue: {
-            // FIXME: 类型
-            getClient: (token: string = REDIS_INJECT_TOKEN) => Promise.resolve(token as any as Redis) as Promise<Redis>,
+            getClient: (token = REDIS_INJECT_TOKEN) => Promise.resolve(token as unknown) as Promise<Redis>,
           }
         },
         {

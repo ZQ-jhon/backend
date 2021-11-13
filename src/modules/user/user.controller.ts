@@ -1,6 +1,6 @@
 import { Controller, Get, HttpException, HttpStatus, Param, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { isNullOrUndefined } from 'util';
+import { isNil } from 'lodash';
 import { AuthGuard } from '../auth/auth.guard';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -19,7 +19,7 @@ export class UserController {
     @Get()
     @ApiBearerAuth()
     public async getUserByQuery(@Query('offset') offset: number, @PickInQuery('limit') limit: number) {
-        if (isNullOrUndefined(offset) || isNullOrUndefined(limit)) {
+        if (isNil(offset) || isNil(limit)) {
             throw new HttpException(`Need more query or parameter`, HttpStatus.BAD_REQUEST);
         }
         return await this.userService.findByOffsetAndLimit(offset, limit).toPromise();

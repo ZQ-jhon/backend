@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { isNullOrUndefined } from 'util';
+import { isNil } from 'lodash';
 import { JWT_SECRET } from '../constants/jwt-secret';
 
 export function verifyAuthHeader(authHeader: string) {
-    if (isNullOrUndefined(authHeader)) {
+    if (isNil(authHeader)) {
         throw new HttpException('Token empty.', HttpStatus.FORBIDDEN);
     }
     const token: string = authHeader.split(' ').pop();
